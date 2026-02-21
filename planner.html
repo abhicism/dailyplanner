@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:#f5f0e8; --paper:#fdfaf5; --ink:#1a1410; --ink-light:#5c4f3d;
+  --accent:#c8440a; --accent-pale:#f5d8c8; --rule:#d8ccb8;
+  --done-bg:#e6f2dc; --done-border:#7aaa5a; --done-text:#4a7a30;
+  --current-bg:#fff8e1; --current-border:#e6a817;
+  --missed-bg:#fde8e8; --missed-border:#d94040;
+  --upcoming-bg:#eef3ff; --upcoming-border:#6b8cda;
+}
+body {
+  font-family:'DM Mono',monospace; background:var(--bg); min-height:100vh; padding:32px 16px;
+  background-image:radial-gradient(circle at 20% 80%,rgba(200,68,10,.05) 0%,transparent 50%),
+    radial-gradient(circle at 80% 20%,rgba(143,168,122,.06) 0%,transparent 50%);
+}
+.planner {
+  max-width:700px; margin:0 auto; background:var(--paper); border-radius:3px;
+  box-shadow:4px 4px 0 #c4b89a,8px 8px 0 rgba(0,0,0,.08); overflow:hidden;
+  animation:rise .5s ease both;
+}
+@keyframes rise { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+
+/* HEADER */
+.header {
+  background:var(--ink); color:var(--bg); padding:26px 34px;
+  display:flex; justify-content:space-between; align-items:flex-end;
+}
+.header h1 { font-family:'DM Serif Display',serif; font-size:2rem; line-height:1; }
+.header h1 em { color:var(--accent); font-style:italic; }
+.date-box { text-align:right; font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; opacity:.75; }
+.date-box strong { font-family:'DM Serif Display',serif; font-size:2.6rem; color:var(--accent); line-height:1; display:block; opacity:1; }
+
+/* TABS */
+.tabs { display:flex; border-bottom:2px solid var(--ink); }
+.tab {
+  flex:1; padding:10px 6px; border:none; background:none; cursor:pointer;
+  font-family:'DM Mono',monospace; font-size:.65rem; text-transform:uppercase;
+  letter-spacing:.1em; color:var(--ink-light); border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .2s;
+}
+.tab.on { color:var(--accent); border-bottom-color:var(--accent); }
+
+/* STATS BAR */
+.stats { display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid var(--rule); }
+.stat { padding:10px 12px; text-align:center; border-right:1px solid var(--rule); }
+.stat:last-child { border-right:none; }
+.slabel { font-size:.58rem; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-light); }
+.sval { font-family:'DM Serif Display',serif; font-size:1.35rem; }
+.sval.g { color:#4d8830; } .sval.r { color:var(--missed-border); } .sval.b { color:var(--upcoming-border); }
+
+/* LEGEND */
+.legend { display:flex; flex-wrap:wrap; gap:12px; padding:8px 34px; border-bottom:1px solid var(--rule); }
+.leg { display:flex; align-items:center; gap:5px; font-size:.59rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-light); }
+.dot { width:9px; height:9px; border-radius:2px; }
+
+/* BODY */
+.body { padding:20px 34px; }
+.slabel-row {
+  font-size:.62rem; text-transform:uppercase; letter-spacing:.12em; color:var(--ink-light);
+  margin-bottom:8px; display:flex; align-items:center; gap:8px;
+}
+.slabel-row::after { content:''; flex:1; height:1px; background:var(--rule); }
+
+.focus-box { background:var(--accent-pale); border-left:3px solid var(--accent); padding:11px 16px; margin-bottom:18px; border-radius:0 2px 2px 0; }
+.focus-in {
+  width:100%; background:transparent; border:none; outline:none;
+  font-family:'DM Serif Display',serif; font-size:1rem; color:var(--ink);
+}
+.focus-in::placeholder { color:#b89e82; }
+
+.clock { font-size:.68rem; color:var(--ink-light); text-align:right; margin-bottom:7px; }
+.clock b { color:var(--current-border); }
+
+/* SLOTS */
+.slot {
+  display:grid; grid-template-columns:80px 1fr 22px; align-items:center;
+  gap:10px; padding:8px 10px; border-radius:4px; margin-bottom:3px;
+  border:1px solid transparent; transition:background .35s,border-color .35s; position:relative;
+}
+.slot.s-done    { background:var(--done-bg);     border-color:var(--done-border); }
+.slot.s-current { background:var(--current-bg);  border-color:var(--current-border); box-shadow:0 0 0 2px rgba(230,168,23,.15); }
+.slot.s-missed  { background:var(--missed-bg);   border-color:var(--missed-border); }
+.slot.s-upcoming{ background:var(--upcoming-bg); border-color:var(--upcoming-border); }
+.slot.s-neutral { border-color:var(--rule); }
+
+.now-badge {
+  display:none; position:absolute; right:38px; top:50%; transform:translateY(-50%);
+  font-size:.5rem; color:var(--current-border); font-weight:600; letter-spacing:.1em;
+  animation:blink 1.4s ease infinite;
+}
+.slot.s-current .now-badge { display:block; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+.tlabel { font-size:.66rem; color:var(--ink-light); font-weight:500; white-space:nowrap; }
+.sinput {
+  background:transparent; border:none; outline:none;
+  font-family:'DM Mono',monospace; font-size:.8rem; color:var(--ink); width:100%; padding:1px 0;
+}
+.sinput::placeholder { color:#c4b89a; }
+.sinput.struck { text-decoration:line-through; opacity:.5; }
+
+.chk {
+  width:20px; height:20px; border-radius:50%; border:1.5px solid var(--rule);
+  background:transparent; cursor:pointer; display:flex; align-items:center;
+  justify-content:center; font-size:10px; color:transparent; transition:all .2s; flex-shrink:0;
+}
+.chk:hover { border-color:var(--done-border); }
+.chk.on { background:var(--done-border); border-color:var(--done-border); color:#fff; }
+
+.add-btn {
+  display:flex; align-items:center; gap:7px; margin-top:6px; padding:6px 0;
+  background:none; border:none; font-family:'DM Mono',monospace; font-size:.7rem;
+  color:var(--ink-light); cursor:pointer; opacity:.65; transition:opacity .2s;
+}
+.add-btn:hover { opacity:1; }
+.add-btn .ic { width:17px; height:17px; border:1.5px solid currentColor; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; }
+
+/* PROGRESS */
+.prog-wrap { background:var(--rule); height:4px; border-radius:3px; margin:8px 0; overflow:hidden; }
+.prog-bar  { height:100%; background:linear-gradient(90deg,#7aaa5a,#4d8830); border-radius:3px; transition:width .5s ease; width:0; }
+
+.notes-ta {
+  width:100%; min-height:60px; background:transparent; border:none; outline:none; resize:none;
+  font-family:'DM Mono',monospace; font-size:.79rem; color:var(--ink); line-height:1.8;
+  background-image:repeating-linear-gradient(transparent,transparent calc(1.8em - 1px),var(--rule) calc(1.8em - 1px),var(--rule) 1.8em);
+}
+.notes-ta::placeholder { color:#c4b89a; }
+
+/* FOOTER */
+.footer {
+  padding:12px 34px; border-top:1px solid var(--rule); display:flex;
+  justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;
+}
+.ptext { font-size:.63rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-light); }
+.btns { display:flex; gap:7px; }
+.btn {
+  background:none; border:1px solid var(--rule); font-family:'DM Mono',monospace;
+  font-size:.61rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-light);
+  padding:5px 13px; cursor:pointer; border-radius:2px; transition:all .2s;
+}
+.btn:hover { border-color:var(--accent); color:var(--accent); }
+.btn.primary { border-color:var(--ink); color:var(--ink); }
+.btn.primary:hover { background:var(--ink); color:var(--bg); }
+
+/* HISTORY */
+.hidden { display:none !important; }
+.hist-empty { text-align:center; padding:36px 20px; color:var(--ink-light); font-size:.78rem; opacity:.6; line-height:1.7; }
+.hday { border:1px solid var(--rule); border-radius:4px; margin-bottom:10px; overflow:hidden; }
+.hday-head {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:9px 15px; background:var(--bg); cursor:pointer;
+  font-size:.68rem; letter-spacing:.06em; text-transform:uppercase;
+}
+.hday-head .hd { font-weight:500; color:var(--ink); }
+.hday-head .hs { color:#4d8830; }
+.hday-head .hm { color:var(--missed-border); margin-left:7px; }
+.htasks { padding:0 15px 10px; }
+.htask { display:flex; align-items:center; gap:8px; padding:4px 0; border-bottom:1px dashed var(--rule); font-size:.71rem; }
+.htask:last-child { border-bottom:none; }
+.hdot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.hdot.d { background:var(--done-border); } .hdot.m { background:var(--missed-border); }
+.htime { color:var(--ink-light); font-size:.62rem; min-width:58px; }
+.htxt  { color:var(--ink); flex:1; }
+.hnotes { margin-top:7px; padding-top:7px; border-top:1px solid var(--rule); font-size:.7rem; color:var(--ink-light); }
+.clear-hist { margin-top:12px; background:none; border:1px dashed var(--missed-border); font-family:'DM Mono',monospace; font-size:.61rem; text-transform:uppercase; letter-spacing:.06em; color:var(--missed-border); padding:5px 14px; cursor:pointer; border-radius:2px; opacity:.7; transition:opacity .2s; }
+.clear-hist:hover { opacity:1; }
+
+/* TOAST */
+#toast {
+  position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
+  background:var(--ink); color:var(--bg); padding:9px 22px; border-radius:4px;
+  font-family:'DM Mono',monospace; font-size:.76rem; letter-spacing:.06em;
+  opacity:0; transition:opacity .3s; pointer-events:none; z-index:999; white-space:nowrap;
+}
+</style>
+</head>
+<body>
+<div class="planner">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>daily<br><em>planner.</em></h1>
+    <div class="date-box">
+      <strong id="dNum"></strong>
+      <span id="dName"></span><br><span id="dMonth"></span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('today',this)">📋 Today</button>
+    <button class="tab"    onclick="switchTab('history',this)">📂 History</button>
+  </div>
+
+  <!-- ===== TODAY ===== -->
+  <div id="pToday">
+    <div class="stats">
+      <div class="stat"><div class="slabel">Total</div><div class="sval"    id="sTot">0</div></div>
+      <div class="stat"><div class="slabel">Done</div> <div class="sval g"  id="sDone">0</div></div>
+      <div class="stat"><div class="slabel">Missed</div><div class="sval r" id="sMiss">0</div></div>
+      <div class="stat"><div class="slabel">Upcoming</div><div class="sval b" id="sUp">0</div></div>
+    </div>
+    <div class="legend">
+      <div class="leg"><div class="dot" style="background:#e6a817"></div>Current</div>
+      <div class="leg"><div class="dot" style="background:var(--done-border)"></div>Done</div>
+      <div class="leg"><div class="dot" style="background:var(--missed-border)"></div>Missed</div>
+      <div class="leg"><div class="dot" style="background:var(--upcoming-border)"></div>Upcoming</div>
+    </div>
+    <div class="body">
+      <div class="slabel-row">Today's Focus</div>
+      <div class="focus-box">
+        <input id="focusIn" class="focus-in" placeholder="What's your #1 priority today?" type="text">
+      </div>
+      <div class="clock">Now: <b id="clk"></b></div>
+      <div class="slabel-row">Schedule</div>
+      <div id="sched"></div>
+      <button class="add-btn" onclick="addSlot()"><span class="ic">+</span> Add time block</button>
+      <br><br>
+      <div class="slabel-row">Progress</div>
+      <div class="prog-wrap"><div class="prog-bar" id="pBar"></div></div>
+      <br>
+      <div class="slabel-row">Notes</div>
+      <textarea id="notesTA" class="notes-ta" rows="3" placeholder="Jot down ideas, reminders, or thoughts..."></textarea>
+    </div>
+    <div class="footer">
+      <span class="ptext" id="pTxt">0% complete</span>
+      <div class="btns">
+        <button class="btn primary" onclick="saveDay()">💾 Save Day</button>
+        <button class="btn"         onclick="clearDay()">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HISTORY ===== -->
+  <div id="pHistory" class="hidden">
+    <div class="body">
+      <div class="slabel-row">Daily Log</div>
+      <div id="histList"></div>
+      <button class="clear-hist" onclick="clearHistory()">🗑 Clear all history</button>
+    </div>
+  </div>
+
+</div>
+<div id="toast"></div>
+
+<script>
+// ── DATE ──────────────────────────────────────────────────────────────
+const NOW  = new Date();
+const DNAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MNAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+document.getElementById('dNum').textContent   = NOW.getDate();
+document.getElementById('dName').textContent  = DNAMES[NOW.getDay()];
+document.getElementById('dMonth').textContent = MNAMES[NOW.getMonth()]+' '+NOW.getFullYear();
+const TKEY = `planner_${NOW.getFullYear()}_${NOW.getMonth()}_${NOW.getDate()}`;
+
+// ── DEFAULT SCHEDULE ─────────────────────────────────────────────────
+const DEFAULTS = [
+  { time:'4:00 AM',  val:'Wake up — 3x water treatment + black coffee' },
+  { time:'5:00 AM',  val:'Yoga session' },
+  { time:'6:00 AM',  val:'Breakfast + live coding session' },
+  { time:'7:00 AM',  val:'Meeting with UK Operational Management Team' },
+  { time:'9:00 AM',  val:'Meeting with German Production Unit' },
+  { time:'10:00 AM', val:'Meeting with Hyderabad TLs & Managers — EOD Target Review' },
+  { time:'11:00 AM', val:'Stock equitation discussion with DLF Branch + call with O-Hub Branch' },
+  { time:'12:00 PM', val:'Brainstorming session with startups @ IIT-B' },
+  { time:'1:00 PM',  val:'Alumni meetup + lunch + casual talk @ IIT-B' },
+  { time:'3:00 PM',  val:'Home — green tea with family, review business flow model & send feedback' },
+  { time:'4:00 PM',  val:'Cuttack office web meeting with CA & others' },
+  { time:'5:00 PM',  val:'Aerobics class @ Jio Central' },
+  { time:'6:00 PM',  val:'Closing target check + market stats + activity tracker feedback' },
+  { time:'7:00 PM',  val:'Dinner with friends' },
+  { time:'8:00 PM',  val:'Home — testing model check, emergency branch, version control update' },
+  { time:'9:00 PM',  val:'DSA session — LeetCode + TensorFlow revisit' },
+  { time:'10:00 PM', val:'Call with Sharav & Tanvi — then off to bed 🌙' },
+];
+
+// ── TIME UTILS ────────────────────────────────────────────────────────
+function toMins(str) {
+  if (!str) return -1;
+  const m = str.match(/(\d+):(\d+)\s*(AM|PM)/i);
+  if (!m) return -1;
+  let h = +m[1], min = +m[2], ap = m[3].toUpperCase();
+  if (ap==='AM' && h===12) h=0;
+  if (ap==='PM' && h!==12) h+=12;
+  return h*60+min;
+}
+function nowMins() { const t=new Date(); return t.getHours()*60+t.getMinutes(); }
+
+function slotState(timeStr, done) {
+  if (done) return 's-done';
+  const sm = toMins(timeStr);
+  if (sm < 0) return 's-neutral';
+  const nm = nowMins();
+  // find next slot time from DOM
+  const allMins = [...document.querySelectorAll('#sched .slot')]
+    .map(s => toMins(s.dataset.t)).filter(t => t > sm);
+  const next = allMins.length ? Math.min(...allMins) : sm+60;
+  if (nm >= sm && nm < next) return 's-current';
+  if (nm >= next)            return 's-missed';
+  return 's-upcoming';
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────
+function render(saved) {
+  const c = document.getElementById('sched');
+  c.innerHTML = '';
+  const slots = saved ? saved.slots : DEFAULTS.map(s=>({...s, done:false}));
+  slots.forEach((s,i) => makeSlot(s.time, s.val, s.done, i));
+  refreshAllStates();
+  if (saved) {
+    document.getElementById('focusIn').value  = saved.focus || '';
+    document.getElementById('notesTA').value  = saved.notes || '';
+  }
+  stats();
+}
+
+function makeSlot(time, val, done, idx) {
+  const c   = document.getElementById('sched');
+  const div = document.createElement('div');
+  div.className = 'slot s-neutral';
+  div.dataset.t = time || '';
+  div.style.animation = `fadeIn .3s ${(idx||0)*.025}s both`;
+  div.innerHTML = `
+    <span class="tlabel">${escHtml(time||'')}</span>
+    <input class="sinput${done?' struck':''}" value="${escHtml(val||'')}" placeholder="—"
+      oninput="autoSave();stats()">
+    <button class="chk${done?' on':''}" onclick="toggleDone(this)">✓</button>
+    <span class="now-badge">▶ NOW</span>
+  `;
+  c.appendChild(div);
+}
+
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── STATE REFRESH ─────────────────────────────────────────────────────
+function refreshAllStates() {
+  document.querySelectorAll('#sched .slot').forEach(s => {
+    const done = s.querySelector('.chk').classList.contains('on');
+    s.className = 'slot ' + slotState(s.dataset.t, done);
+  });
+}
+
+// ── TOGGLE DONE ───────────────────────────────────────────────────────
+function toggleDone(btn) {
+  btn.classList.toggle('on');
+  const inp = btn.previousElementSibling;
+  inp.classList.toggle('struck', btn.classList.contains('on'));
+  const slot = btn.closest('.slot');
+  slot.className = 'slot ' + slotState(slot.dataset.t, btn.classList.contains('on'));
+  autoSave(); stats();
+}
+
+// ── ADD SLOT ──────────────────────────────────────────────────────────
+function addSlot() {
+  const c = document.getElementById('sched');
+  const div = document.createElement('div');
+  div.className = 'slot s-neutral';
+  div.dataset.t = '';
+  div.innerHTML = `
+    <input class="sinput tlabel" style="color:var(--ink-light);font-size:.65rem;" placeholder="time"
+      oninput="this.closest('.slot').dataset.t=this.value;autoSave()">
+    <input class="sinput" placeholder="Task description" oninput="autoSave();stats()">
+    <button class="chk" onclick="toggleDone(this)">✓</button>
+    <span class="now-badge">▶ NOW</span>
+  `;
+  c.appendChild(div);
+  div.querySelector('input').focus();
+  stats();
+}
+
+// ── STATS ─────────────────────────────────────────────────────────────
+function stats() {
+  let tot=0,done=0,miss=0,up=0;
+  document.querySelectorAll('#sched .slot').forEach(s => {
+    const inp = s.querySelectorAll('.sinput');
+    const valInp = inp.length > 1 ? inp[inp.length-1] : inp[0];
+    if (!valInp || !valInp.value.trim()) return;
+    tot++;
+    const cl = s.classList;
+    if (cl.contains('s-done'))     done++;
+    else if (cl.contains('s-missed'))   miss++;
+    else if (cl.contains('s-upcoming')) up++;
+  });
+  document.getElementById('sTot').textContent  = tot;
+  document.getElementById('sDone').textContent = done;
+  document.getElementById('sMiss').textContent = miss;
+  document.getElementById('sUp').textContent   = up;
+  const pct = tot > 0 ? Math.round(done/tot*100) : 0;
+  document.getElementById('pBar').style.width = pct+'%';
+  document.getElementById('pTxt').textContent  = pct+'% complete';
+}
+
+// ── AUTO-SAVE ─────────────────────────────────────────────────────────
+function collectSlots() {
+  return [...document.querySelectorAll('#sched .slot')].map(s => {
+    const inps = s.querySelectorAll('.sinput');
+    const isCustomTime = inps.length > 1 && inps[0].tagName==='INPUT' && inps[0].placeholder==='time';
+    const time = isCustomTime ? inps[0].value : (s.querySelector('.tlabel')?.textContent || s.dataset.t || '');
+    const val  = inps[inps.length-1]?.value || '';
+    const done = s.querySelector('.chk')?.classList.contains('on') || false;
+    return { time, val, done };
+  });
+}
+
+function autoSave() {
+  try {
+    localStorage.setItem(TKEY, JSON.stringify({
+      slots: collectSlots(),
+      focus: document.getElementById('focusIn').value,
+      notes: document.getElementById('notesTA').value,
+      ts:    Date.now()
+    }));
+  } catch(e) {}
+}
+
+// ── SAVE DAY TO HISTORY ───────────────────────────────────────────────
+function saveDay() {
+  autoSave();
+  const data = JSON.parse(localStorage.getItem(TKEY)||'{}');
+  data.dateLabel = DNAMES[NOW.getDay()]+', '+NOW.getDate()+' '+MNAMES[NOW.getMonth()]+' '+NOW.getFullYear();
+  data.dateKey   = TKEY;
+  let hist = JSON.parse(localStorage.getItem('planner_hist')||'[]');
+  const idx = hist.findIndex(h=>h.dateKey===TKEY);
+  if (idx>=0) hist[idx]=data; else hist.unshift(data);
+  if (hist.length > 60) hist = hist.slice(0,60); // keep last 60 days
+  localStorage.setItem('planner_hist', JSON.stringify(hist));
+  toast('Day saved to history ✓');
+}
+
+// ── CLEAR TODAY ───────────────────────────────────────────────────────
+function clearDay() {
+  if (!confirm('Clear all entries for today?')) return;
+  localStorage.removeItem(TKEY);
+  render(null);
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('pToday').classList.toggle('hidden',   name!=='today');
+  document.getElementById('pHistory').classList.toggle('hidden', name!=='history');
+  if (name==='history') renderHistory();
+}
+
+// ── HISTORY ───────────────────────────────────────────────────────────
+function renderHistory() {
+  const el   = document.getElementById('histList');
+  const hist = JSON.parse(localStorage.getItem('planner_hist')||'[]');
+  if (!hist.length) {
+    el.innerHTML = '<div class="hist-empty">No history yet.<br>Complete your day and press <b>💾 Save Day</b> to log your progress here.</div>';
+    return;
+  }
+  el.innerHTML = '';
+  hist.forEach(day => {
+    const filled = (day.slots||[]).filter(s=>s.val);
+    const done   = filled.filter(s=>s.done).length;
+    const miss   = filled.length - done;
+    const div = document.createElement('div');
+    div.className = 'hday';
+    div.innerHTML = `
+      <div class="hday-head" onclick="this.nextElementSibling.classList.toggle('hidden')">
+        <span class="hd">${day.dateLabel||'Unknown date'}</span>
+        <span><span class="hs">✓ ${done}/${filled.length}</span>${miss>0?`<span class="hm">✗ ${miss} missed</span>`:''}</span>
+      </div>
+      <div class="htasks hidden">
+        ${filled.map(s=>`
+          <div class="htask">
+            <div class="hdot ${s.done?'d':'m'}"></div>
+            <span class="htime">${escHtml(s.time)}</span>
+            <span class="htxt">${escHtml(s.val)}</span>
+          </div>`).join('')}
+        ${day.notes ? `<div class="hnotes">📝 ${escHtml(day.notes)}</div>` : ''}
+        ${day.focus ? `<div class="hnotes">🎯 Focus: ${escHtml(day.focus)}</div>` : ''}
+      </div>`;
+    el.appendChild(div);
+  });
+}
+
+function clearHistory() {
+  if (!confirm('Delete all history? This cannot be undone.')) return;
+  localStorage.removeItem('planner_hist');
+  renderHistory();
+  toast('History cleared');
+}
+
+// ── LIVE CLOCK + refresh slot colors every min ────────────────────────
+function tick() {
+  const t  = new Date();
+  const h  = t.getHours(), m = t.getMinutes(), s = t.getSeconds();
+  const hh = (h%12)||12, mm = String(m).padStart(2,'0'), ss = String(s).padStart(2,'0');
+  document.getElementById('clk').textContent = `${hh}:${mm}:${ss} ${h>=12?'PM':'AM'}`;
+  if (s===0) { refreshAllStates(); stats(); }
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.opacity = '1';
+  setTimeout(()=>{ t.style.opacity='0'; }, 2200);
+}
+
+// ── ADD KEYFRAME ──────────────────────────────────────────────────────
+const ks = document.createElement('style');
+ks.textContent = '@keyframes fadeIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}';
+document.head.appendChild(ks);
+
+// ── AUTO-SAVE HOOKS ───────────────────────────────────────────────────
+document.getElementById('focusIn').addEventListener('input', autoSave);
+document.getElementById('notesTA').addEventListener('input', autoSave);
+
+// ── INIT ──────────────────────────────────────────────────────────────
+const saved = localStorage.getItem(TKEY);
+render(saved ? JSON.parse(saved) : null);
+setInterval(tick, 1000);
+tick();
+</script>
+</body>
+</html>
