@@ -79,7 +79,7 @@ body {
 
 /* SLOTS */
 .slot {
-  display:grid; grid-template-columns:80px 1fr 22px; align-items:center;
+  display:grid; grid-template-columns:80px 1fr 22px; align-items:start;
   gap:10px; padding:8px 10px; border-radius:4px; margin-bottom:3px;
   border:1px solid transparent; transition:background .35s,border-color .35s; position:relative;
 }
@@ -101,6 +101,9 @@ body {
 .sinput {
   background:transparent; border:none; outline:none;
   font-family:'DM Mono',monospace; font-size:.8rem; color:var(--ink); width:100%; padding:1px 0;
+  white-space:pre-wrap; word-break:break-word; overflow-wrap:break-word;
+  resize:none; min-height:1.4em; line-height:1.5;
+  field-sizing:content;
 }
 .sinput::placeholder { color:#c4b89a; }
 .sinput.struck { text-decoration:line-through; opacity:.5; }
@@ -327,10 +330,10 @@ function makeSlot(time, val, done, idx) {
   div.dataset.t = time || '';
   div.style.animation = `fadeIn .3s ${(idx||0)*.025}s both`;
   div.innerHTML = `
-    <span class="tlabel">${escHtml(time||'')}</span>
-    <input class="sinput${done?' struck':''}" value="${escHtml(val||'')}" placeholder="—"
-      oninput="autoSave();stats()">
-    <button class="chk${done?' on':''}" onclick="toggleDone(this)">✓</button>
+    <span class="tlabel" style="padding-top:3px">${escHtml(time||'')}</span>
+    <textarea class="sinput${done?' struck':''}" placeholder="—" rows="1"
+      oninput="autoSave();stats();autoResize(this)">${escHtml(val||'')}</textarea>
+    <button class="chk${done?' on':''}" onclick="toggleDone(this)" style="margin-top:2px">✓</button>
     <span class="now-badge">▶ NOW</span>
   `;
   c.appendChild(div);
@@ -349,7 +352,7 @@ function refreshAllStates() {
 // ── TOGGLE DONE ───────────────────────────────────────────────────────
 function toggleDone(btn) {
   btn.classList.toggle('on');
-  const inp = btn.previousElementSibling;
+  const inp = btn.previousElementSibling; // textarea or input
   inp.classList.toggle('struck', btn.classList.contains('on'));
   const slot = btn.closest('.slot');
   slot.className = 'slot ' + slotState(slot.dataset.t, btn.classList.contains('on'));
@@ -370,7 +373,7 @@ function addSlot() {
     <span class="now-badge">▶ NOW</span>
   `;
   c.appendChild(div);
-  div.querySelector('input').focus();
+  div.querySelectorAll('input, textarea')[0].focus();
   stats();
 }
 
@@ -515,9 +518,19 @@ document.head.appendChild(ks);
 document.getElementById('focusIn').addEventListener('input', autoSave);
 document.getElementById('notesTA').addEventListener('input', autoSave);
 
+// ── AUTO RESIZE TEXTAREA ─────────────────────────────────────────────
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+function autoResizeAll() {
+  document.querySelectorAll('#sched textarea.sinput').forEach(autoResize);
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────
 const saved = localStorage.getItem(TKEY);
 render(saved ? JSON.parse(saved) : null);
+  setTimeout(autoResizeAll, 50);
 setInterval(tick, 1000);
 tick();
 </script>
