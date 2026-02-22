@@ -174,6 +174,30 @@ body {
 .clear-hist { margin-top:12px; background:none; border:1px dashed var(--missed-border); font-family:'DM Mono',monospace; font-size:.61rem; text-transform:uppercase; letter-spacing:.06em; color:var(--missed-border); padding:5px 14px; cursor:pointer; border-radius:2px; opacity:.7; transition:opacity .2s; }
 .clear-hist:hover { opacity:1; }
 
+/* AUTH */
+#authBox {
+  max-width:420px; margin:80px auto; background:var(--paper); border-radius:3px;
+  box-shadow:4px 4px 0 #c4b89a,8px 8px 0 rgba(0,0,0,.08);
+  padding:36px; text-align:center; font-family:'DM Mono',monospace;
+}
+#authBox h2 { font-family:'DM Serif Display',serif; font-size:1.6rem; margin-bottom:22px; color:var(--ink); }
+#authBox input {
+  width:100%; padding:10px 14px; margin:5px 0; border:1px solid var(--rule);
+  background:var(--bg); font-family:'DM Mono',monospace; font-size:.8rem;
+  color:var(--ink); border-radius:2px; outline:none;
+}
+#authBox input:focus { border-color:var(--accent); }
+#authBox .auth-btns { display:flex; gap:8px; margin-top:14px; }
+#authBox .auth-btns button {
+  flex:1; padding:9px; border:1px solid var(--ink); background:none;
+  font-family:'DM Mono',monospace; font-size:.7rem; text-transform:uppercase;
+  letter-spacing:.07em; cursor:pointer; color:var(--ink); border-radius:2px; transition:all .2s;
+}
+#authBox .auth-btns button:hover { background:var(--ink); color:var(--bg); }
+#authBox .auth-btns button.sec { border-color:var(--rule); color:var(--ink-light); }
+#authBox .auth-btns button.sec:hover { border-color:var(--accent); color:var(--accent); background:none; }
+#authMsg { margin-top:12px; font-size:.72rem; color:var(--missed-border); min-height:1.2em; }
+
 /* TOAST */
 #toast {
   position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
@@ -183,19 +207,19 @@ body {
 }
 </style>
 </head>
-<body>  
-<div id="authBox" style="max-width:420px;margin:80px auto;font-family:sans-serif;text-align:center">
-  <h2>Planner Login</h2>
+<body>
 
-  <input id="u" placeholder="username" style="width:100%;padding:10px;margin:6px">
-  <input id="p" type="password" placeholder="password" style="width:100%;padding:10px;margin:6px">
-
-  <br><br>
-  <button onclick="login()">Login</button>
-  <button onclick="register()">Register</button>
-
+<div id="authBox">
+  <h2>daily <em style="font-style:italic;color:var(--accent)">planner.</em></h2>
+  <input id="u" placeholder="username" autocomplete="username">
+  <input id="p" type="password" placeholder="password" autocomplete="current-password">
+  <div class="auth-btns">
+    <button onclick="login()">Login</button>
+    <button class="sec" onclick="register()">Register</button>
+  </div>
   <p id="authMsg"></p>
-</div>  
+</div>
+
 <div class="planner" id="app" style="display:none">
 
   <!-- HEADER -->
@@ -273,26 +297,14 @@ document.getElementById('dNum').textContent   = NOW.getDate();
 document.getElementById('dName').textContent  = DNAMES[NOW.getDay()];
 document.getElementById('dMonth').textContent = MNAMES[NOW.getMonth()]+' '+NOW.getFullYear();
 const TKEY = `planner_${NOW.getFullYear()}_${NOW.getMonth()}_${NOW.getDate()}`;
+const API  = "http://127.0.0.1:8000";
 
 // ── DEFAULT SCHEDULE ─────────────────────────────────────────────────
 const DEFAULTS = [
-  { time:'4:00 AM',  val:'Wake up — 3x water treatment + black coffee' },
-  { time:'5:00 AM',  val:'Yoga session' },
-  { time:'6:00 AM',  val:'Breakfast + live coding session' },
-  { time:'7:00 AM',  val:'Meeting with UK Operational Management Team' },
-  { time:'9:00 AM',  val:'Meeting with German Production Unit' },
-  { time:'10:00 AM', val:'Meeting with Hyderabad TLs & Managers — EOD Target Review' },
-  { time:'11:00 AM', val:'Stock equitation discussion with DLF Branch + call with O-Hub Branch' },
-  { time:'12:00 PM', val:'Brainstorming session with startups @ IIT-B' },
-  { time:'1:00 PM',  val:'Alumni meetup + lunch + casual talk @ IIT-B' },
-  { time:'3:00 PM',  val:'Home — green tea with family, review business flow model & send feedback' },
-  { time:'4:00 PM',  val:'Cuttack office web meeting with CA & others' },
-  { time:'5:00 PM',  val:'Aerobics class @ Jio Central' },
-  { time:'6:00 PM',  val:'Closing target check + market stats + activity tracker feedback' },
-  { time:'7:00 PM',  val:'Dinner with friends' },
-  { time:'8:00 PM',  val:'Home — testing model check, emergency branch, version control update' },
-  { time:'9:00 PM',  val:'DSA session — LeetCode + TensorFlow revisit' },
-  { time:'10:00 PM', val:'Call with Sharav & Tanvi — then off to bed 🌙' },
+  '4:00 AM','5:00 AM','6:00 AM','7:00 AM','8:00 AM','9:00 AM',
+  '10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM',
+  '4:00 PM','5:00 PM','6:00 PM','7:00 PM','8:00 PM','9:00 PM',
+  '10:00 PM','11:00 PM'
 ];
 
 // ── TIME UTILS ────────────────────────────────────────────────────────
@@ -312,7 +324,6 @@ function slotState(timeStr, done) {
   const sm = toMins(timeStr);
   if (sm < 0) return 's-neutral';
   const nm = nowMins();
-  // find next slot time from DOM
   const allMins = [...document.querySelectorAll('#sched .slot')]
     .map(s => toMins(s.dataset.t)).filter(t => t > sm);
   const next = allMins.length ? Math.min(...allMins) : sm+60;
@@ -321,18 +332,21 @@ function slotState(timeStr, done) {
   return 's-upcoming';
 }
 
-// ── RENDER ────────────────────────────────────────────────────────────
+// ── RENDER (called ONLY on init / explicit reload) ────────────────────
 function render(saved) {
   const c = document.getElementById('sched');
   c.innerHTML = '';
-  const slots = saved ? saved.slots : DEFAULTS.map(s=>({...s, done:false}));
+  const slots = saved
+    ? saved.slots
+    : DEFAULTS.map(time => ({ time, val:'', done:false }));
   slots.forEach((s,i) => makeSlot(s.time, s.val, s.done, i));
   refreshAllStates();
   if (saved) {
-    document.getElementById('focusIn').value  = saved.focus || '';
-    document.getElementById('notesTA').value  = saved.notes || '';
+    document.getElementById('focusIn').value = saved.focus || '';
+    document.getElementById('notesTA').value = saved.notes || '';
   }
   stats();
+  setTimeout(autoResizeAll, 50);
 }
 
 function makeSlot(time, val, done, idx) {
@@ -344,14 +358,14 @@ function makeSlot(time, val, done, idx) {
   div.innerHTML = `
     <span class="tlabel" style="padding-top:3px">${escHtml(time||'')}</span>
     <textarea class="sinput${done?' struck':''}" placeholder="—" rows="1"
-      oninput="autoSave();stats();autoResize(this)">${escHtml(val||'')}</textarea>
+      oninput="scheduleAutoSave();stats();autoResize(this)">${escHtml(val||'')}</textarea>
     <button class="chk${done?' on':''}" onclick="toggleDone(this)" style="margin-top:2px">✓</button>
     <span class="now-badge">▶ NOW</span>
   `;
   c.appendChild(div);
 }
 
-function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 // ── STATE REFRESH ─────────────────────────────────────────────────────
 function refreshAllStates() {
@@ -364,11 +378,12 @@ function refreshAllStates() {
 // ── TOGGLE DONE ───────────────────────────────────────────────────────
 function toggleDone(btn) {
   btn.classList.toggle('on');
-  const inp = btn.previousElementSibling; // textarea or input
+  const inp = btn.previousElementSibling;
   inp.classList.toggle('struck', btn.classList.contains('on'));
   const slot = btn.closest('.slot');
   slot.className = 'slot ' + slotState(slot.dataset.t, btn.classList.contains('on'));
-  autoSave(); stats();
+  scheduleAutoSave();
+  stats();
 }
 
 // ── ADD SLOT ──────────────────────────────────────────────────────────
@@ -379,8 +394,8 @@ function addSlot() {
   div.dataset.t = '';
   div.innerHTML = `
     <input class="sinput tlabel" style="color:var(--ink-light);font-size:.65rem;" placeholder="time"
-      oninput="this.closest('.slot').dataset.t=this.value;autoSave()">
-    <input class="sinput" placeholder="Task description" oninput="autoSave();stats()">
+      oninput="this.closest('.slot').dataset.t=this.value;scheduleAutoSave()">
+    <input class="sinput" placeholder="Task description" oninput="scheduleAutoSave();stats()">
     <button class="chk" onclick="toggleDone(this)">✓</button>
     <span class="now-badge">▶ NOW</span>
   `;
@@ -398,7 +413,7 @@ function stats() {
     if (!valInp || !valInp.value.trim()) return;
     tot++;
     const cl = s.classList;
-    if (cl.contains('s-done'))     done++;
+    if (cl.contains('s-done'))          done++;
     else if (cl.contains('s-missed'))   miss++;
     else if (cl.contains('s-upcoming')) up++;
   });
@@ -407,11 +422,11 @@ function stats() {
   document.getElementById('sMiss').textContent = miss;
   document.getElementById('sUp').textContent   = up;
   const pct = tot > 0 ? Math.round(done/tot*100) : 0;
-  document.getElementById('pBar').style.width = pct+'%';
+  document.getElementById('pBar').style.width  = pct+'%';
   document.getElementById('pTxt').textContent  = pct+'% complete';
 }
 
-// ── AUTO-SAVE ─────────────────────────────────────────────────────────
+// ── COLLECT SLOTS ─────────────────────────────────────────────────────
 function collectSlots() {
   return [...document.querySelectorAll('#sched .slot')].map(s => {
     const inps = s.querySelectorAll('.sinput');
@@ -423,37 +438,57 @@ function collectSlots() {
   });
 }
 
+// ── DEBOUNCED AUTO-SAVE (prevents save on every keystroke) ────────────
+// FIX: Use debounce so rapid typing doesn't cause multiple saves/re-renders.
+// autoSave only sends data to server; it does NOT call render().
+let _saveTimer = null;
+function scheduleAutoSave() {
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(autoSave, 800); // save 800ms after last keystroke
+}
+
 async function autoSave() {
   const token = localStorage.getItem("token");
-  if(!token) return;
+  if (!token) return;
 
-  await fetch(API+"/save_day",{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "Authorization":"Bearer "+token
-    },
-    body:JSON.stringify({
-      date_key:TKEY,
-      payload:{
-        slots:collectSlots(),
-        focus:focusIn.value,
-        notes:notesTA.value
-      }
-    })
-  });
+  const payload = {
+    slots: collectSlots(),
+    focus: document.getElementById('focusIn').value,
+    notes: document.getElementById('notesTA').value
+  };
+
+  // Save to localStorage as backup (no render triggered)
+  localStorage.setItem(TKEY, JSON.stringify(payload));
+
+  // Save to server
+  try {
+    await fetch(API+"/save_day", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer "+token
+      },
+      body: JSON.stringify({ date_key: TKEY, payload })
+    });
+  } catch(e) {
+    // Silently fail - data is already in localStorage as backup
+  }
 }
 
 // ── SAVE DAY TO HISTORY ───────────────────────────────────────────────
-function saveDay() {
-  autoSave();
-  const data = JSON.parse(localStorage.getItem(TKEY)||'{}');
-  data.dateLabel = DNAMES[NOW.getDay()]+', '+NOW.getDate()+' '+MNAMES[NOW.getMonth()]+' '+NOW.getFullYear();
-  data.dateKey   = TKEY;
+async function saveDay() {
+  await autoSave();
+  const data = {
+    slots: collectSlots(),
+    focus: document.getElementById('focusIn').value,
+    notes: document.getElementById('notesTA').value,
+    dateLabel: DNAMES[NOW.getDay()]+', '+NOW.getDate()+' '+MNAMES[NOW.getMonth()]+' '+NOW.getFullYear(),
+    dateKey: TKEY
+  };
   let hist = JSON.parse(localStorage.getItem('planner_hist')||'[]');
   const idx = hist.findIndex(h=>h.dateKey===TKEY);
   if (idx>=0) hist[idx]=data; else hist.unshift(data);
-  if (hist.length > 60) hist = hist.slice(0,60); // keep last 60 days
+  if (hist.length > 60) hist = hist.slice(0,60);
   localStorage.setItem('planner_hist', JSON.stringify(hist));
   toast('Day saved to history ✓');
 }
@@ -523,6 +558,8 @@ function tick() {
   document.getElementById('clk').textContent = `${hh}:${mm}:${ss} ${h>=12?'PM':'AM'}`;
   if (s===0) { refreshAllStates(); stats(); }
 }
+setInterval(tick, 1000);
+tick();
 
 // ── TOAST ─────────────────────────────────────────────────────────────
 function toast(msg) {
@@ -536,9 +573,9 @@ const ks = document.createElement('style');
 ks.textContent = '@keyframes fadeIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}';
 document.head.appendChild(ks);
 
-// ── AUTO-SAVE HOOKS ───────────────────────────────────────────────────
-document.getElementById('focusIn').addEventListener('input', autoSave);
-document.getElementById('notesTA').addEventListener('input', autoSave);
+// ── AUTO-SAVE HOOKS for focus/notes ──────────────────────────────────
+document.getElementById('focusIn').addEventListener('input', scheduleAutoSave);
+document.getElementById('notesTA').addEventListener('input', scheduleAutoSave);
 
 // ── AUTO RESIZE TEXTAREA ─────────────────────────────────────────────
 function autoResize(el) {
@@ -549,57 +586,94 @@ function autoResizeAll() {
   document.querySelectorAll('#sched textarea.sinput').forEach(autoResize);
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────
-const saved = localStorage.getItem(TKEY);
-render(saved ? JSON.parse(saved) : null);
-  setTimeout(autoResizeAll, 50);
-setInterval(tick, 1000);
-tick();
-const API = "http://127.0.0.1:8000";
-
-// ---------- REGISTER ----------
+// ── AUTH ──────────────────────────────────────────────────────────────
 async function register() {
-  const r = await fetch(API+"/register",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({username:u.value,password:p.value})
+  const authMsg = document.getElementById('authMsg');
+  authMsg.style.color = 'var(--ink-light)';
+  authMsg.textContent = 'Registering...';
+  const r = await fetch(API+"/register", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      username: document.getElementById('u').value,
+      password: document.getElementById('p').value
+    })
   });
-
-  authMsg.textContent = r.ok ? "Registered. Now login." : "User exists";
+  if (r.ok) {
+    authMsg.style.color = '#4d8830';
+    authMsg.textContent = 'Registered! Now login.';
+  } else {
+    authMsg.style.color = 'var(--missed-border)';
+    authMsg.textContent = 'Username already exists.';
+  }
 }
 
-// ---------- LOGIN ----------
 async function login() {
-  const fd = new FormData();
-  fd.append("username",u.value);
-  fd.append("password",p.value);
+  const authMsg = document.getElementById('authMsg');
+  authMsg.style.color = 'var(--ink-light)';
+  authMsg.textContent = 'Logging in...';
 
-  const r = await fetch(API+"/login",{method:"POST",body:fd});
-  if(!r.ok){ authMsg.textContent="Invalid login"; return; }
+  const fd = new FormData();
+  fd.append("username", document.getElementById('u').value);
+  fd.append("password", document.getElementById('p').value);
+
+  const r = await fetch(API+"/login", {method:"POST", body:fd});
+  if (!r.ok) {
+    authMsg.style.color = 'var(--missed-border)';
+    authMsg.textContent = 'Invalid username or password.';
+    return;
+  }
 
   const data = await r.json();
-  localStorage.setItem("token",data.access_token);
+  localStorage.setItem("token", data.access_token);
+  showApp();
+}
 
-  authBox.style.display="none";
-  app.style.display="block";
-
+function showApp() {
+  document.getElementById('authBox').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
   loadFromServer();
 }
-async function loadFromServer(){
+
+// ── LOAD FROM SERVER ─────────────────────────────────────────────────
+// FIX: loadFromServer is called ONCE on init. It does NOT run on every
+// keystroke. After initial load, only autoSave() sends data to the server.
+async function loadFromServer() {
   const token = localStorage.getItem("token");
-  if(!token) return;
+  if (!token) return;
 
-  const r = await fetch(API+"/get_day/"+TKEY,{
-    headers:{Authorization:"Bearer "+token}
-  });
-
-  const d = await r.json();
-  if(d.data) render(JSON.parse(d.data));
+  try {
+    const r = await fetch(API+"/get_day/"+TKEY, {
+      headers: {Authorization: "Bearer "+token}
+    });
+    const d = await r.json();
+    if (d.data) {
+      render(JSON.parse(d.data));
+    } else {
+      // Try localStorage fallback, then defaults
+      const local = localStorage.getItem(TKEY);
+      render(local ? JSON.parse(local) : null);
+    }
+  } catch(e) {
+    // Server unreachable — fall back to localStorage
+    const local = localStorage.getItem(TKEY);
+    render(local ? JSON.parse(local) : null);
+  }
 }
-if(localStorage.getItem("token")){
-  authBox.style.display="none";
-  app.style.display="block";
-  loadFromServer();
+
+// ── INIT ──────────────────────────────────────────────────────────────
+// FIX: If token exists, show app and load from server ONCE.
+// Do NOT call render() here — loadFromServer() handles that.
+if (localStorage.getItem("token")) {
+  showApp();
+} else {
+  // Not logged in — show auth box (already visible by default)
+  // Also allow offline use: load from localStorage if no token
+  // (Remove the next two lines if you want login to be required)
+  document.getElementById('authBox').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  const local = localStorage.getItem(TKEY);
+  render(local ? JSON.parse(local) : null);
 }
 </script>
 </body>
