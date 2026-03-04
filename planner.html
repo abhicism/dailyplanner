@@ -15,79 +15,290 @@
   --missed-bg:#fde8e8; --missed-border:#d94040;
   --upcoming-bg:#eef3ff; --upcoming-border:#6b8cda;
 }
+
+/* ── KEYFRAMES ───────────────────────────────────────────────────── */
+@keyframes rise {
+  from { opacity:0; transform:translateY(24px) scale(.98); }
+  to   { opacity:1; transform:translateY(0)   scale(1); }
+}
+@keyframes fadeIn {
+  from { opacity:0; transform:translateX(-8px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+@keyframes slideDown {
+  from { opacity:0; transform:translateY(-10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes popIn {
+  0%   { opacity:0; transform:scale(.6) rotate(-8deg); }
+  70%  { transform:scale(1.15) rotate(3deg); }
+  100% { opacity:1; transform:scale(1) rotate(0); }
+}
+@keyframes blink {
+  0%,100% { opacity:1; }
+  50%      { opacity:.25; }
+}
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+@keyframes pulseGlow {
+  0%,100% { box-shadow: 0 0 0 2px rgba(230,168,23,.15); }
+  50%      { box-shadow: 0 0 0 5px rgba(230,168,23,.30); }
+}
+@keyframes progressFill {
+  from { width:0; }
+}
+@keyframes checkBounce {
+  0%   { transform:scale(1); }
+  30%  { transform:scale(.82); }
+  60%  { transform:scale(1.22); }
+  80%  { transform:scale(.95); }
+  100% { transform:scale(1); }
+}
+@keyframes strikeThrough {
+  from { text-decoration-color:transparent; }
+  to   { text-decoration-color:currentColor; }
+}
+@keyframes statPop {
+  0%   { transform:scale(1); }
+  40%  { transform:scale(1.3) translateY(-3px); }
+  100% { transform:scale(1); }
+}
+@keyframes headerReveal {
+  from { opacity:0; transform:translateY(-100%); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes tabUnderline {
+  from { transform:scaleX(0); }
+  to   { transform:scaleX(1); }
+}
+@keyframes toastIn {
+  from { opacity:0; transform:translateX(-50%) translateY(14px); }
+  to   { opacity:1; transform:translateX(-50%) translateY(0); }
+}
+@keyframes toastOut {
+  from { opacity:1; transform:translateX(-50%) translateY(0); }
+  to   { opacity:0; transform:translateX(-50%) translateY(10px); }
+}
+@keyframes focusShimmer {
+  0%   { background-position:0% 50%; }
+  50%  { background-position:100% 50%; }
+  100% { background-position:0% 50%; }
+}
+@keyframes dateNumDrop {
+  from { opacity:0; transform:translateY(-20px) scale(.8); }
+  to   { opacity:1; transform:translateY(0)     scale(1); }
+}
+@keyframes legendFade {
+  from { opacity:0; transform:translateY(6px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes clockTick {
+  0%  { opacity:1; }
+  45% { opacity:1; }
+  50% { opacity:.4; }
+  55% { opacity:1; }
+}
+@keyframes addBtnPulse {
+  0%,100% { opacity:.65; }
+  50%      { opacity:.9; }
+}
+@keyframes slotHighlight {
+  0%   { background:rgba(230,168,23,.25); }
+  100% { background:transparent; }
+}
+
+/* ── BODY / PAGE ─────────────────────────────────────────────────── */
 body {
   font-family:'DM Mono',monospace; background:var(--bg); min-height:100vh; padding:32px 16px;
-  background-image:radial-gradient(circle at 20% 80%,rgba(200,68,10,.05) 0%,transparent 50%),
-    radial-gradient(circle at 80% 20%,rgba(143,168,122,.06) 0%,transparent 50%);
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(200,68,10,.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(143,168,122,.07) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(107,140,218,.04) 0%, transparent 60%);
 }
+
+/* ── PLANNER CARD ────────────────────────────────────────────────── */
 .planner {
   max-width:700px; margin:0 auto; background:var(--paper); border-radius:3px;
-  box-shadow:4px 4px 0 #c4b89a,8px 8px 0 rgba(0,0,0,.08); overflow:hidden;
-  animation:rise .5s ease both;
+  box-shadow:4px 4px 0 #c4b89a, 8px 8px 0 rgba(0,0,0,.08);
+  overflow:hidden;
+  animation: rise .55s cubic-bezier(.22,.68,0,1.2) both;
 }
-@keyframes rise { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
 
-/* HEADER */
+/* ── HEADER ──────────────────────────────────────────────────────── */
 .header {
   background:var(--ink); color:var(--bg); padding:26px 34px;
   display:flex; justify-content:space-between; align-items:flex-end;
+  overflow:hidden;
+  animation: headerReveal .45s ease both;
 }
-.header h1 { font-family:'DM Serif Display',serif; font-size:2rem; line-height:1; }
+.header h1 {
+  font-family:'DM Serif Display',serif; font-size:2rem; line-height:1;
+  animation: fadeIn .5s .15s ease both;
+}
 .header h1 em { color:var(--accent); font-style:italic; }
-.date-box { text-align:right; font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; opacity:.75; }
-.date-box strong { font-family:'DM Serif Display',serif; font-size:2.6rem; color:var(--accent); line-height:1; display:block; opacity:1; }
+.date-box {
+  text-align:right; font-size:.68rem; letter-spacing:.08em;
+  text-transform:uppercase; opacity:.75;
+  animation: fadeIn .5s .25s ease both;
+}
+.date-box strong {
+  font-family:'DM Serif Display',serif; font-size:2.6rem; color:var(--accent);
+  line-height:1; display:block; opacity:1;
+  animation: dateNumDrop .55s .3s cubic-bezier(.22,.68,0,1.3) both;
+}
 
-/* TABS */
-.tabs { display:flex; border-bottom:2px solid var(--ink); }
+/* ── TABS ────────────────────────────────────────────────────────── */
+.tabs {
+  display:flex; border-bottom:2px solid var(--ink);
+  animation: slideDown .3s .4s ease both;
+}
 .tab {
   flex:1; padding:10px 6px; border:none; background:none; cursor:pointer;
   font-family:'DM Mono',monospace; font-size:.65rem; text-transform:uppercase;
-  letter-spacing:.1em; color:var(--ink-light); border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .2s;
+  letter-spacing:.1em; color:var(--ink-light);
+  border-bottom:2px solid transparent; margin-bottom:-2px;
+  transition:color .22s;
+  position:relative; overflow:hidden;
 }
-.tab.on { color:var(--accent); border-bottom-color:var(--accent); }
+.tab::after {
+  content:''; position:absolute; bottom:-2px; left:0; right:0; height:2px;
+  background:var(--accent); transform:scaleX(0); transform-origin:left;
+  transition:transform .25s cubic-bezier(.22,.68,0,1.2);
+}
+.tab.on { color:var(--accent); }
+.tab.on::after { transform:scaleX(1); }
+.tab:hover:not(.on) { color:var(--ink); }
+/* ripple on click */
+.tab-ripple {
+  position:absolute; border-radius:50%; background:rgba(200,68,10,.15);
+  transform:scale(0); animation:rippleAnim .5s ease-out;
+  pointer-events:none;
+}
+@keyframes rippleAnim {
+  to { transform:scale(4); opacity:0; }
+}
 
-/* STATS BAR */
-.stats { display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid var(--rule); }
-.stat { padding:10px 12px; text-align:center; border-right:1px solid var(--rule); }
+/* ── STATS BAR ───────────────────────────────────────────────────── */
+.stats {
+  display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid var(--rule);
+}
+.stat {
+  padding:10px 12px; text-align:center; border-right:1px solid var(--rule);
+  animation: slideDown .35s ease both;
+}
+.stat:nth-child(1) { animation-delay:.42s; }
+.stat:nth-child(2) { animation-delay:.47s; }
+.stat:nth-child(3) { animation-delay:.52s; }
+.stat:nth-child(4) { animation-delay:.57s; }
 .stat:last-child { border-right:none; }
 .slabel { font-size:.58rem; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-light); }
-.sval { font-family:'DM Serif Display',serif; font-size:1.35rem; }
+.sval {
+  font-family:'DM Serif Display',serif; font-size:1.35rem;
+  transition:transform .2s, color .3s;
+  display:inline-block;
+}
+.sval.pop { animation:statPop .3s cubic-bezier(.22,.68,0,1.3); }
 .sval.g { color:#4d8830; } .sval.r { color:var(--missed-border); } .sval.b { color:var(--upcoming-border); }
 
-/* LEGEND */
-.legend { display:flex; flex-wrap:wrap; gap:12px; padding:8px 34px; border-bottom:1px solid var(--rule); }
-.leg { display:flex; align-items:center; gap:5px; font-size:.59rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-light); }
-.dot { width:9px; height:9px; border-radius:2px; }
+/* ── LEGEND ──────────────────────────────────────────────────────── */
+.legend {
+  display:flex; flex-wrap:wrap; gap:12px; padding:8px 34px;
+  border-bottom:1px solid var(--rule);
+}
+.leg {
+  display:flex; align-items:center; gap:5px; font-size:.59rem;
+  text-transform:uppercase; letter-spacing:.07em; color:var(--ink-light);
+  animation: legendFade .3s ease both;
+}
+.leg:nth-child(1) { animation-delay:.55s; }
+.leg:nth-child(2) { animation-delay:.6s; }
+.leg:nth-child(3) { animation-delay:.65s; }
+.leg:nth-child(4) { animation-delay:.7s; }
+.dot {
+  width:9px; height:9px; border-radius:2px;
+  transition:transform .2s;
+}
+.leg:hover .dot { transform:scale(1.4) rotate(10deg); }
 
-/* BODY */
-.body { padding:20px 34px; }
+/* ── BODY ────────────────────────────────────────────────────────── */
+.body {
+  padding:20px 34px;
+  animation: fadeIn .4s .6s ease both;
+}
 .slabel-row {
   font-size:.62rem; text-transform:uppercase; letter-spacing:.12em; color:var(--ink-light);
   margin-bottom:8px; display:flex; align-items:center; gap:8px;
 }
 .slabel-row::after { content:''; flex:1; height:1px; background:var(--rule); }
 
-.focus-box { background:var(--accent-pale); border-left:3px solid var(--accent); padding:11px 16px; margin-bottom:18px; border-radius:0 2px 2px 0; }
+/* ── FOCUS BOX ───────────────────────────────────────────────────── */
+.focus-box {
+  background:var(--accent-pale); border-left:3px solid var(--accent);
+  padding:11px 16px; margin-bottom:18px; border-radius:0 2px 2px 0;
+  transition:border-color .25s, box-shadow .25s, background .25s;
+  position:relative; overflow:hidden;
+}
+.focus-box::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,
+    transparent 0%, rgba(255,255,255,.35) 40%, rgba(255,255,255,.55) 50%, transparent 100%
+  );
+  background-size:200% 100%;
+  opacity:0; transition:opacity .3s;
+  pointer-events:none;
+}
+.focus-box:focus-within {
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(200,68,10,.12);
+}
+.focus-box:focus-within::before {
+  opacity:1;
+  animation:shimmer 1.8s ease infinite;
+}
 .focus-in {
   width:100%; background:transparent; border:none; outline:none;
   font-family:'DM Serif Display',serif; font-size:1rem; color:var(--ink);
+  transition:opacity .2s;
 }
 .focus-in::placeholder { color:#b89e82; }
 
-.clock { font-size:.68rem; color:var(--ink-light); text-align:right; margin-bottom:7px; }
-.clock b { color:var(--current-border); }
+/* ── CLOCK ───────────────────────────────────────────────────────── */
+.clock {
+  font-size:.68rem; color:var(--ink-light); text-align:right; margin-bottom:7px;
+  animation: fadeIn .3s .75s ease both;
+}
+.clock b {
+  color:var(--current-border);
+  animation:clockTick 2s ease infinite;
+}
 
-/* SLOTS */
+/* ── SLOTS ───────────────────────────────────────────────────────── */
 .slot {
   display:grid; grid-template-columns:80px 1fr 22px; align-items:start;
   gap:10px; padding:8px 10px; border-radius:4px; margin-bottom:3px;
-  border:1px solid transparent; transition:background .35s,border-color .35s; position:relative;
+  border:1px solid transparent;
+  transition:background .4s ease, border-color .4s ease, box-shadow .4s ease, transform .2s ease;
+  position:relative;
+  animation: fadeIn .32s ease both;
+  will-change:transform;
 }
-.slot.s-done    { background:var(--done-bg);     border-color:var(--done-border); }
-.slot.s-current { background:var(--current-bg);  border-color:var(--current-border); box-shadow:0 0 0 2px rgba(230,168,23,.15); }
-.slot.s-missed  { background:var(--missed-bg);   border-color:var(--missed-border); }
-.slot.s-upcoming{ background:var(--upcoming-bg); border-color:var(--upcoming-border); }
-.slot.s-neutral { border-color:var(--rule); }
+.slot:hover { transform:translateX(2px); }
+
+.slot.s-done     { background:var(--done-bg);     border-color:var(--done-border); }
+.slot.s-current  {
+  background:var(--current-bg);  border-color:var(--current-border);
+  animation:fadeIn .32s ease both, pulseGlow 2.4s ease infinite;
+}
+.slot.s-missed   { background:var(--missed-bg);   border-color:var(--missed-border); }
+.slot.s-upcoming { background:var(--upcoming-bg); border-color:var(--upcoming-border); }
+.slot.s-neutral  { border-color:var(--rule); }
+
+/* newly-added slot highlight */
+.slot.just-added {
+  animation: slotHighlight .6s ease both, fadeIn .32s ease both;
+}
 
 .now-badge {
   display:none; position:absolute; right:38px; top:50%; transform:translateY(-50%);
@@ -95,115 +306,213 @@ body {
   animation:blink 1.4s ease infinite;
 }
 .slot.s-current .now-badge { display:block; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
 
-.tlabel { font-size:.66rem; color:var(--ink-light); font-weight:500; white-space:nowrap; }
+.tlabel {
+  font-size:.66rem; color:var(--ink-light); font-weight:500; white-space:nowrap;
+  transition:color .25s;
+}
+.slot.s-current .tlabel { color:var(--current-border); }
+.slot.s-done    .tlabel { color:var(--done-border); }
+
 .sinput {
   background:transparent; border:none; outline:none;
   font-family:'DM Mono',monospace; font-size:.8rem; color:var(--ink); width:100%; padding:1px 0;
   white-space:pre-wrap; word-break:break-word; overflow-wrap:break-word;
-  resize:none; min-height:1.4em; line-height:1.5;
-  field-sizing:content;
+  resize:none; min-height:1.4em; line-height:1.5; field-sizing:content;
+  transition:opacity .25s;
 }
 .sinput::placeholder { color:#c4b89a; }
-.sinput.struck { text-decoration:line-through; opacity:.5; }
+.sinput.struck {
+  text-decoration:line-through; opacity:.5;
+  animation:strikeThrough .3s ease both;
+}
 
+/* ── CHECKBOX ────────────────────────────────────────────────────── */
 .chk {
   width:20px; height:20px; border-radius:50%; border:1.5px solid var(--rule);
   background:transparent; cursor:pointer; display:flex; align-items:center;
-  justify-content:center; font-size:10px; color:transparent; transition:all .2s; flex-shrink:0;
+  justify-content:center; font-size:10px; color:transparent;
+  transition:border-color .2s, background .2s, color .15s, transform .15s;
+  flex-shrink:0;
 }
-.chk:hover { border-color:var(--done-border); }
-.chk.on { background:var(--done-border); border-color:var(--done-border); color:#fff; }
+.chk:hover {
+  border-color:var(--done-border);
+  transform:scale(1.12);
+}
+.chk.on {
+  background:var(--done-border); border-color:var(--done-border); color:#fff;
+  animation:checkBounce .4s cubic-bezier(.22,.68,0,1.3);
+}
+/* uncheck animation */
+.chk.unchecking {
+  animation:checkBounce .3s cubic-bezier(.22,.68,0,1.3) reverse;
+}
 
+/* ── ADD BUTTON ──────────────────────────────────────────────────── */
 .add-btn {
   display:flex; align-items:center; gap:7px; margin-top:6px; padding:6px 0;
   background:none; border:none; font-family:'DM Mono',monospace; font-size:.7rem;
-  color:var(--ink-light); cursor:pointer; opacity:.65; transition:opacity .2s;
+  color:var(--ink-light); cursor:pointer;
+  opacity:.65; transition:opacity .2s, transform .2s, color .2s;
+  animation:addBtnPulse 3s ease infinite;
 }
-.add-btn:hover { opacity:1; }
-.add-btn .ic { width:17px; height:17px; border:1.5px solid currentColor; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; }
+.add-btn:hover {
+  opacity:1; color:var(--accent);
+  transform:translateX(3px);
+  animation:none;
+}
+.add-btn .ic {
+  width:17px; height:17px; border:1.5px solid currentColor; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; font-size:13px;
+  transition:transform .25s cubic-bezier(.22,.68,0,1.4), border-color .2s;
+}
+.add-btn:hover .ic { transform:rotate(90deg) scale(1.1); }
 
-/* PROGRESS */
-.prog-wrap { background:var(--rule); height:4px; border-radius:3px; margin:8px 0; overflow:hidden; }
-.prog-bar  { height:100%; background:linear-gradient(90deg,#7aaa5a,#4d8830); border-radius:3px; transition:width .5s ease; width:0; }
+/* ── PROGRESS ────────────────────────────────────────────────────── */
+.prog-wrap {
+  background:var(--rule); height:4px; border-radius:3px; margin:8px 0; overflow:hidden;
+}
+.prog-bar {
+  height:100%; background:linear-gradient(90deg,#7aaa5a,#4d8830);
+  border-radius:3px;
+  transition:width .6s cubic-bezier(.22,.68,0,1.2);
+  width:0;
+  position:relative; overflow:hidden;
+}
+.prog-bar::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.45) 50%,transparent 100%);
+  background-size:200% 100%;
+  animation:shimmer 2.2s ease infinite;
+}
 
+/* ── NOTES ───────────────────────────────────────────────────────── */
 .notes-ta {
-  width:100%; min-height:60px; background:transparent; border:none; outline:none; resize:none;
-  font-family:'DM Mono',monospace; font-size:.79rem; color:var(--ink); line-height:1.8;
+  width:100%; min-height:60px; background:transparent; border:none; outline:none;
+  resize:none; font-family:'DM Mono',monospace; font-size:.79rem; color:var(--ink); line-height:1.8;
   background-image:repeating-linear-gradient(transparent,transparent calc(1.8em - 1px),var(--rule) calc(1.8em - 1px),var(--rule) 1.8em);
+  transition:opacity .25s;
 }
 .notes-ta::placeholder { color:#c4b89a; }
+.notes-ta:focus { opacity:1; }
 
-/* FOOTER */
+/* ── FOOTER ──────────────────────────────────────────────────────── */
 .footer {
-  padding:12px 34px; border-top:1px solid var(--rule); display:flex;
-  justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;
+  padding:12px 34px; border-top:1px solid var(--rule);
+  display:flex; justify-content:space-between; align-items:center;
+  flex-wrap:wrap; gap:8px;
+  animation: slideDown .35s .65s ease both;
 }
-.ptext { font-size:.63rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-light); }
+.ptext { font-size:.63rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-light); transition:color .3s; }
 .btns { display:flex; gap:7px; }
 .btn {
   background:none; border:1px solid var(--rule); font-family:'DM Mono',monospace;
   font-size:.61rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-light);
-  padding:5px 13px; cursor:pointer; border-radius:2px; transition:all .2s;
+  padding:5px 13px; cursor:pointer; border-radius:2px;
+  transition:border-color .2s, color .2s, background .2s, transform .15s, box-shadow .2s;
 }
-.btn:hover { border-color:var(--accent); color:var(--accent); }
+.btn:hover {
+  border-color:var(--accent); color:var(--accent);
+  transform:translateY(-1px); box-shadow:0 2px 8px rgba(200,68,10,.15);
+}
+.btn:active { transform:translateY(0); box-shadow:none; }
 .btn.primary { border-color:var(--ink); color:var(--ink); }
-.btn.primary:hover { background:var(--ink); color:var(--bg); }
+.btn.primary:hover { background:var(--ink); color:var(--bg); box-shadow:0 2px 8px rgba(26,20,16,.2); }
 
-/* HISTORY */
+/* ── HIDDEN / HISTORY ────────────────────────────────────────────── */
 .hidden { display:none !important; }
-.hist-empty { text-align:center; padding:36px 20px; color:var(--ink-light); font-size:.78rem; opacity:.6; line-height:1.7; }
-.hday { border:1px solid var(--rule); border-radius:4px; margin-bottom:10px; overflow:hidden; }
+
+.hist-empty {
+  text-align:center; padding:36px 20px; color:var(--ink-light);
+  font-size:.78rem; opacity:.6; line-height:1.7;
+  animation:fadeIn .4s ease both;
+}
+.hday {
+  border:1px solid var(--rule); border-radius:4px; margin-bottom:10px; overflow:hidden;
+  animation:fadeIn .3s ease both;
+  transition:box-shadow .2s, border-color .2s;
+}
+.hday:hover { border-color:#bbb0a0; box-shadow:0 2px 8px rgba(0,0,0,.06); }
 .hday-head {
   display:flex; justify-content:space-between; align-items:center;
   padding:9px 15px; background:var(--bg); cursor:pointer;
   font-size:.68rem; letter-spacing:.06em; text-transform:uppercase;
+  transition:background .2s;
 }
+.hday-head:hover { background:#ede8df; }
 .hday-head .hd { font-weight:500; color:var(--ink); }
 .hday-head .hs { color:#4d8830; }
 .hday-head .hm { color:var(--missed-border); margin-left:7px; }
-.htasks { padding:0 15px 10px; }
-.htask { display:flex; align-items:center; gap:8px; padding:4px 0; border-bottom:1px dashed var(--rule); font-size:.71rem; }
+.htasks { padding:0 15px 10px; transition:all .3s; }
+.htask {
+  display:flex; align-items:center; gap:8px; padding:4px 0;
+  border-bottom:1px dashed var(--rule); font-size:.71rem;
+  animation:fadeIn .25s ease both;
+}
 .htask:last-child { border-bottom:none; }
-.hdot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
-.hdot.d { background:var(--done-border); } .hdot.m { background:var(--missed-border); }
+.hdot {
+  width:7px; height:7px; border-radius:50%; flex-shrink:0;
+  transition:transform .2s;
+}
+.htask:hover .hdot { transform:scale(1.5); }
+.hdot.d { background:var(--done-border); }
+.hdot.m { background:var(--missed-border); }
 .htime { color:var(--ink-light); font-size:.62rem; min-width:58px; }
 .htxt  { color:var(--ink); flex:1; }
 .hnotes { margin-top:7px; padding-top:7px; border-top:1px solid var(--rule); font-size:.7rem; color:var(--ink-light); }
-.clear-hist { margin-top:12px; background:none; border:1px dashed var(--missed-border); font-family:'DM Mono',monospace; font-size:.61rem; text-transform:uppercase; letter-spacing:.06em; color:var(--missed-border); padding:5px 14px; cursor:pointer; border-radius:2px; opacity:.7; transition:opacity .2s; }
-.clear-hist:hover { opacity:1; }
+.clear-hist {
+  margin-top:12px; background:none; border:1px dashed var(--missed-border);
+  font-family:'DM Mono',monospace; font-size:.61rem; text-transform:uppercase;
+  letter-spacing:.06em; color:var(--missed-border); padding:5px 14px;
+  cursor:pointer; border-radius:2px;
+  opacity:.7; transition:opacity .2s, transform .15s, background .2s;
+}
+.clear-hist:hover { opacity:1; transform:translateY(-1px); background:rgba(217,64,64,.06); }
 
-/* AUTH */
+/* ── AUTH BOX ────────────────────────────────────────────────────── */
 #authBox {
   max-width:420px; margin:80px auto; background:var(--paper); border-radius:3px;
-  box-shadow:4px 4px 0 #c4b89a,8px 8px 0 rgba(0,0,0,.08);
+  box-shadow:4px 4px 0 #c4b89a, 8px 8px 0 rgba(0,0,0,.08);
   padding:36px; text-align:center; font-family:'DM Mono',monospace;
+  animation:rise .5s ease both;
 }
 #authBox h2 { font-family:'DM Serif Display',serif; font-size:1.6rem; margin-bottom:22px; color:var(--ink); }
 #authBox input {
   width:100%; padding:10px 14px; margin:5px 0; border:1px solid var(--rule);
   background:var(--bg); font-family:'DM Mono',monospace; font-size:.8rem;
   color:var(--ink); border-radius:2px; outline:none;
+  transition:border-color .2s, box-shadow .2s;
 }
-#authBox input:focus { border-color:var(--accent); }
+#authBox input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(200,68,10,.1); }
 #authBox .auth-btns { display:flex; gap:8px; margin-top:14px; }
 #authBox .auth-btns button {
   flex:1; padding:9px; border:1px solid var(--ink); background:none;
   font-family:'DM Mono',monospace; font-size:.7rem; text-transform:uppercase;
-  letter-spacing:.07em; cursor:pointer; color:var(--ink); border-radius:2px; transition:all .2s;
+  letter-spacing:.07em; cursor:pointer; color:var(--ink); border-radius:2px;
+  transition:background .2s, color .2s, transform .15s, box-shadow .2s;
 }
-#authBox .auth-btns button:hover { background:var(--ink); color:var(--bg); }
+#authBox .auth-btns button:hover {
+  background:var(--ink); color:var(--bg);
+  transform:translateY(-1px); box-shadow:0 3px 10px rgba(26,20,16,.2);
+}
+#authBox .auth-btns button:active { transform:translateY(0); }
 #authBox .auth-btns button.sec { border-color:var(--rule); color:var(--ink-light); }
 #authBox .auth-btns button.sec:hover { border-color:var(--accent); color:var(--accent); background:none; }
 #authMsg { margin-top:12px; font-size:.72rem; color:var(--missed-border); min-height:1.2em; }
 
-/* TOAST */
+/* ── TOAST ───────────────────────────────────────────────────────── */
 #toast {
   position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
   background:var(--ink); color:var(--bg); padding:9px 22px; border-radius:4px;
   font-family:'DM Mono',monospace; font-size:.76rem; letter-spacing:.06em;
-  opacity:0; transition:opacity .3s; pointer-events:none; z-index:999; white-space:nowrap;
+  opacity:0; pointer-events:none; z-index:999; white-space:nowrap;
+}
+#toast.show {
+  animation:toastIn .3s cubic-bezier(.22,.68,0,1.2) forwards;
+  opacity:1;
+}
+#toast.hide {
+  animation:toastOut .3s ease forwards;
 }
 </style>
 </head>
@@ -332,7 +641,7 @@ function slotState(timeStr, done) {
   return 's-upcoming';
 }
 
-// ── RENDER (called ONLY on init / explicit reload) ────────────────────
+// ── RENDER ────────────────────────────────────────────────────────────
 function render(saved) {
   const c = document.getElementById('sched');
   c.innerHTML = '';
@@ -354,7 +663,8 @@ function makeSlot(time, val, done, idx) {
   const div = document.createElement('div');
   div.className = 'slot s-neutral';
   div.dataset.t = time || '';
-  div.style.animation = `fadeIn .3s ${(idx||0)*.025}s both`;
+  // Stagger each slot's fade-in
+  div.style.animationDelay = `${(idx||0) * 0.028}s`;
   div.innerHTML = `
     <span class="tlabel" style="padding-top:3px">${escHtml(time||'')}</span>
     <textarea class="sinput${done?' struck':''}" placeholder="—" rows="1"
@@ -371,12 +681,23 @@ function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
 function refreshAllStates() {
   document.querySelectorAll('#sched .slot').forEach(s => {
     const done = s.querySelector('.chk').classList.contains('on');
-    s.className = 'slot ' + slotState(s.dataset.t, done);
+    const newState = slotState(s.dataset.t, done);
+    // Only update class if changed, to avoid re-triggering animations
+    const curClass = [...s.classList].find(c => c.startsWith('s-'));
+    if (curClass !== newState) {
+      s.classList.remove(curClass);
+      s.classList.add(newState);
+    }
   });
 }
 
 // ── TOGGLE DONE ───────────────────────────────────────────────────────
 function toggleDone(btn) {
+  const wasOn = btn.classList.contains('on');
+  // brief "unchecking" reverse animation
+  if (wasOn) btn.classList.add('unchecking');
+  setTimeout(() => btn.classList.remove('unchecking'), 300);
+
   btn.classList.toggle('on');
   const inp = btn.previousElementSibling;
   inp.classList.toggle('struck', btn.classList.contains('on'));
@@ -390,7 +711,7 @@ function toggleDone(btn) {
 function addSlot() {
   const c = document.getElementById('sched');
   const div = document.createElement('div');
-  div.className = 'slot s-neutral';
+  div.className = 'slot s-neutral just-added';
   div.dataset.t = '';
   div.innerHTML = `
     <input class="sinput tlabel" style="color:var(--ink-light);font-size:.65rem;" placeholder="time"
@@ -400,11 +721,14 @@ function addSlot() {
     <span class="now-badge">▶ NOW</span>
   `;
   c.appendChild(div);
+  // Remove highlight class after animation
+  setTimeout(() => div.classList.remove('just-added'), 700);
   div.querySelectorAll('input, textarea')[0].focus();
   stats();
 }
 
 // ── STATS ─────────────────────────────────────────────────────────────
+const _prevStats = { tot:null, done:null, miss:null, up:null };
 function stats() {
   let tot=0,done=0,miss=0,up=0;
   document.querySelectorAll('#sched .slot').forEach(s => {
@@ -417,10 +741,22 @@ function stats() {
     else if (cl.contains('s-missed'))   miss++;
     else if (cl.contains('s-upcoming')) up++;
   });
-  document.getElementById('sTot').textContent  = tot;
-  document.getElementById('sDone').textContent = done;
-  document.getElementById('sMiss').textContent = miss;
-  document.getElementById('sUp').textContent   = up;
+
+  // Animate stat numbers when they change
+  const vals = { tot, done, miss, up };
+  const ids  = { tot:'sTot', done:'sDone', miss:'sMiss', up:'sUp' };
+  for (const [k, id] of Object.entries(ids)) {
+    const el = document.getElementById(id);
+    if (_prevStats[k] !== vals[k]) {
+      el.textContent = vals[k];
+      el.classList.remove('pop');
+      void el.offsetWidth; // reflow to restart animation
+      el.classList.add('pop');
+      setTimeout(() => el.classList.remove('pop'), 400);
+      _prevStats[k] = vals[k];
+    }
+  }
+
   const pct = tot > 0 ? Math.round(done/tot*100) : 0;
   document.getElementById('pBar').style.width  = pct+'%';
   document.getElementById('pTxt').textContent  = pct+'% complete';
@@ -438,44 +774,32 @@ function collectSlots() {
   });
 }
 
-// ── DEBOUNCED AUTO-SAVE (prevents save on every keystroke) ────────────
-// FIX: Use debounce so rapid typing doesn't cause multiple saves/re-renders.
-// autoSave only sends data to server; it does NOT call render().
+// ── DEBOUNCED AUTO-SAVE ───────────────────────────────────────────────
 let _saveTimer = null;
 function scheduleAutoSave() {
   clearTimeout(_saveTimer);
-  _saveTimer = setTimeout(autoSave, 800); // save 800ms after last keystroke
+  _saveTimer = setTimeout(autoSave, 800);
 }
 
 async function autoSave() {
   const token = localStorage.getItem("token");
   if (!token) return;
-
   const payload = {
     slots: collectSlots(),
     focus: document.getElementById('focusIn').value,
     notes: document.getElementById('notesTA').value
   };
-
-  // Save to localStorage as backup (no render triggered)
   localStorage.setItem(TKEY, JSON.stringify(payload));
-
-  // Save to server
   try {
     await fetch(API+"/save_day", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer "+token
-      },
+      headers: { "Content-Type":"application/json", "Authorization":"Bearer "+token },
       body: JSON.stringify({ date_key: TKEY, payload })
     });
-  } catch(e) {
-    // Silently fail - data is already in localStorage as backup
-  }
+  } catch(e) {}
 }
 
-// ── SAVE DAY TO HISTORY ───────────────────────────────────────────────
+// ── SAVE DAY ──────────────────────────────────────────────────────────
 async function saveDay() {
   await autoSave();
   const data = {
@@ -502,6 +826,14 @@ function clearDay() {
 
 // ── TABS ──────────────────────────────────────────────────────────────
 function switchTab(name, btn) {
+  // Tab ripple effect
+  const rect = btn.getBoundingClientRect();
+  const ripple = document.createElement('span');
+  ripple.className = 'tab-ripple';
+  ripple.style.cssText = `width:${btn.offsetWidth}px;height:${btn.offsetWidth}px;left:0;top:${(btn.offsetHeight - btn.offsetWidth)/2}px`;
+  btn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 500);
+
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   document.getElementById('pToday').classList.toggle('hidden',   name!=='today');
@@ -518,20 +850,21 @@ function renderHistory() {
     return;
   }
   el.innerHTML = '';
-  hist.forEach(day => {
+  hist.forEach((day, i) => {
     const filled = (day.slots||[]).filter(s=>s.val);
     const done   = filled.filter(s=>s.done).length;
     const miss   = filled.length - done;
     const div = document.createElement('div');
     div.className = 'hday';
+    div.style.animationDelay = `${i * 0.06}s`;
     div.innerHTML = `
       <div class="hday-head" onclick="this.nextElementSibling.classList.toggle('hidden')">
         <span class="hd">${day.dateLabel||'Unknown date'}</span>
         <span><span class="hs">✓ ${done}/${filled.length}</span>${miss>0?`<span class="hm">✗ ${miss} missed</span>`:''}</span>
       </div>
       <div class="htasks hidden">
-        ${filled.map(s=>`
-          <div class="htask">
+        ${filled.map((s,j)=>`
+          <div class="htask" style="animation-delay:${j*.04}s">
             <div class="hdot ${s.done?'d':'m'}"></div>
             <span class="htime">${escHtml(s.time)}</span>
             <span class="htxt">${escHtml(s.val)}</span>
@@ -550,7 +883,7 @@ function clearHistory() {
   toast('History cleared');
 }
 
-// ── LIVE CLOCK + refresh slot colors every min ────────────────────────
+// ── LIVE CLOCK ────────────────────────────────────────────────────────
 function tick() {
   const t  = new Date();
   const h  = t.getHours(), m = t.getMinutes(), s = t.getSeconds();
@@ -562,20 +895,17 @@ setInterval(tick, 1000);
 tick();
 
 // ── TOAST ─────────────────────────────────────────────────────────────
+let _toastTimer = null;
 function toast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.style.opacity = '1';
-  setTimeout(()=>{ t.style.opacity='0'; }, 2200);
+  clearTimeout(_toastTimer);
+  t.textContent = msg;
+  t.className = 'show';
+  _toastTimer = setTimeout(() => {
+    t.className = 'hide';
+    setTimeout(() => { t.className = ''; }, 320);
+  }, 2200);
 }
-
-// ── ADD KEYFRAME ──────────────────────────────────────────────────────
-const ks = document.createElement('style');
-ks.textContent = '@keyframes fadeIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}';
-document.head.appendChild(ks);
-
-// ── AUTO-SAVE HOOKS for focus/notes ──────────────────────────────────
-document.getElementById('focusIn').addEventListener('input', scheduleAutoSave);
-document.getElementById('notesTA').addEventListener('input', scheduleAutoSave);
 
 // ── AUTO RESIZE TEXTAREA ─────────────────────────────────────────────
 function autoResize(el) {
@@ -592,38 +922,22 @@ async function register() {
   authMsg.style.color = 'var(--ink-light)';
   authMsg.textContent = 'Registering...';
   const r = await fetch(API+"/register", {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({
-      username: document.getElementById('u').value,
-      password: document.getElementById('p').value
-    })
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({ username:document.getElementById('u').value, password:document.getElementById('p').value })
   });
-  if (r.ok) {
-    authMsg.style.color = '#4d8830';
-    authMsg.textContent = 'Registered! Now login.';
-  } else {
-    authMsg.style.color = 'var(--missed-border)';
-    authMsg.textContent = 'Username already exists.';
-  }
+  if (r.ok) { authMsg.style.color='#4d8830'; authMsg.textContent='Registered! Now login.'; }
+  else       { authMsg.style.color='var(--missed-border)'; authMsg.textContent='Username already exists.'; }
 }
 
 async function login() {
   const authMsg = document.getElementById('authMsg');
   authMsg.style.color = 'var(--ink-light)';
   authMsg.textContent = 'Logging in...';
-
   const fd = new FormData();
   fd.append("username", document.getElementById('u').value);
   fd.append("password", document.getElementById('p').value);
-
   const r = await fetch(API+"/login", {method:"POST", body:fd});
-  if (!r.ok) {
-    authMsg.style.color = 'var(--missed-border)';
-    authMsg.textContent = 'Invalid username or password.';
-    return;
-  }
-
+  if (!r.ok) { authMsg.style.color='var(--missed-border)'; authMsg.textContent='Invalid username or password.'; return; }
   const data = await r.json();
   localStorage.setItem("token", data.access_token);
   showApp();
@@ -635,41 +949,26 @@ function showApp() {
   loadFromServer();
 }
 
-// ── LOAD FROM SERVER ─────────────────────────────────────────────────
-// FIX: loadFromServer is called ONCE on init. It does NOT run on every
-// keystroke. After initial load, only autoSave() sends data to the server.
 async function loadFromServer() {
   const token = localStorage.getItem("token");
   if (!token) return;
-
   try {
-    const r = await fetch(API+"/get_day/"+TKEY, {
-      headers: {Authorization: "Bearer "+token}
-    });
+    const r = await fetch(API+"/get_day/"+TKEY, { headers:{Authorization:"Bearer "+token} });
     const d = await r.json();
-    if (d.data) {
-      render(JSON.parse(d.data));
-    } else {
-      // Try localStorage fallback, then defaults
-      const local = localStorage.getItem(TKEY);
-      render(local ? JSON.parse(local) : null);
-    }
+    if (d.data) render(JSON.parse(d.data));
+    else { const local = localStorage.getItem(TKEY); render(local ? JSON.parse(local) : null); }
   } catch(e) {
-    // Server unreachable — fall back to localStorage
-    const local = localStorage.getItem(TKEY);
-    render(local ? JSON.parse(local) : null);
+    const local = localStorage.getItem(TKEY); render(local ? JSON.parse(local) : null);
   }
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────
-// FIX: If token exists, show app and load from server ONCE.
-// Do NOT call render() here — loadFromServer() handles that.
+document.getElementById('focusIn').addEventListener('input', scheduleAutoSave);
+document.getElementById('notesTA').addEventListener('input', scheduleAutoSave);
+
 if (localStorage.getItem("token")) {
   showApp();
 } else {
-  // Not logged in — show auth box (already visible by default)
-  // Also allow offline use: load from localStorage if no token
-  // (Remove the next two lines if you want login to be required)
   document.getElementById('authBox').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   const local = localStorage.getItem(TKEY);
