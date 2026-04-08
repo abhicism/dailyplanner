@@ -69,10 +69,6 @@
   from { opacity:0; transform:translateY(-100%); }
   to   { opacity:1; transform:translateY(0); }
 }
-@keyframes tabUnderline {
-  from { transform:scaleX(0); }
-  to   { transform:scaleX(1); }
-}
 @keyframes toastIn {
   from { opacity:0; transform:translateX(-50%) translateY(14px); }
   to   { opacity:1; transform:translateX(-50%) translateY(0); }
@@ -80,11 +76,6 @@
 @keyframes toastOut {
   from { opacity:1; transform:translateX(-50%) translateY(0); }
   to   { opacity:0; transform:translateX(-50%) translateY(10px); }
-}
-@keyframes focusShimmer {
-  0%   { background-position:0% 50%; }
-  50%  { background-position:100% 50%; }
-  100% { background-position:0% 50%; }
 }
 @keyframes dateNumDrop {
   from { opacity:0; transform:translateY(-20px) scale(.8); }
@@ -107,6 +98,9 @@
 @keyframes slotHighlight {
   0%   { background:rgba(230,168,23,.25); }
   100% { background:transparent; }
+}
+@keyframes rippleAnim {
+  to { transform:scale(4); opacity:0; }
 }
 
 /* ── BODY / PAGE ─────────────────────────────────────────────────── */
@@ -170,14 +164,10 @@ body {
 .tab.on { color:var(--accent); }
 .tab.on::after { transform:scaleX(1); }
 .tab:hover:not(.on) { color:var(--ink); }
-/* ripple on click */
 .tab-ripple {
   position:absolute; border-radius:50%; background:rgba(200,68,10,.15);
   transform:scale(0); animation:rippleAnim .5s ease-out;
   pointer-events:none;
-}
-@keyframes rippleAnim {
-  to { transform:scale(4); opacity:0; }
 }
 
 /* ── STATS BAR ───────────────────────────────────────────────────── */
@@ -216,10 +206,7 @@ body {
 .leg:nth-child(2) { animation-delay:.6s; }
 .leg:nth-child(3) { animation-delay:.65s; }
 .leg:nth-child(4) { animation-delay:.7s; }
-.dot {
-  width:9px; height:9px; border-radius:2px;
-  transition:transform .2s;
-}
+.dot { width:9px; height:9px; border-radius:2px; transition:transform .2s; }
 .leg:hover .dot { transform:scale(1.4) rotate(10deg); }
 
 /* ── BODY ────────────────────────────────────────────────────────── */
@@ -249,14 +236,8 @@ body {
   opacity:0; transition:opacity .3s;
   pointer-events:none;
 }
-.focus-box:focus-within {
-  border-color:var(--accent);
-  box-shadow:0 0 0 3px rgba(200,68,10,.12);
-}
-.focus-box:focus-within::before {
-  opacity:1;
-  animation:shimmer 1.8s ease infinite;
-}
+.focus-box:focus-within { border-color:var(--accent); box-shadow:0 0 0 3px rgba(200,68,10,.12); }
+.focus-box:focus-within::before { opacity:1; animation:shimmer 1.8s ease infinite; }
 .focus-in {
   width:100%; background:transparent; border:none; outline:none;
   font-family:'DM Serif Display',serif; font-size:1rem; color:var(--ink);
@@ -269,10 +250,7 @@ body {
   font-size:.68rem; color:var(--ink-light); text-align:right; margin-bottom:7px;
   animation: fadeIn .3s .75s ease both;
 }
-.clock b {
-  color:var(--current-border);
-  animation:clockTick 2s ease infinite;
-}
+.clock b { color:var(--current-border); animation:clockTick 2s ease infinite; }
 
 /* ── SLOTS ───────────────────────────────────────────────────────── */
 .slot {
@@ -285,7 +263,6 @@ body {
   will-change:transform;
 }
 .slot:hover { transform:translateX(2px); }
-
 .slot.s-done     { background:var(--done-bg);     border-color:var(--done-border); }
 .slot.s-current  {
   background:var(--current-bg);  border-color:var(--current-border);
@@ -294,11 +271,7 @@ body {
 .slot.s-missed   { background:var(--missed-bg);   border-color:var(--missed-border); }
 .slot.s-upcoming { background:var(--upcoming-bg); border-color:var(--upcoming-border); }
 .slot.s-neutral  { border-color:var(--rule); }
-
-/* newly-added slot highlight */
-.slot.just-added {
-  animation: slotHighlight .6s ease both, fadeIn .32s ease both;
-}
+.slot.just-added { animation: slotHighlight .6s ease both, fadeIn .32s ease both; }
 
 .now-badge {
   display:none; position:absolute; right:38px; top:50%; transform:translateY(-50%);
@@ -335,18 +308,12 @@ body {
   transition:border-color .2s, background .2s, color .15s, transform .15s;
   flex-shrink:0;
 }
-.chk:hover {
-  border-color:var(--done-border);
-  transform:scale(1.12);
-}
+.chk:hover { border-color:var(--done-border); transform:scale(1.12); }
 .chk.on {
   background:var(--done-border); border-color:var(--done-border); color:#fff;
   animation:checkBounce .4s cubic-bezier(.22,.68,0,1.3);
 }
-/* uncheck animation */
-.chk.unchecking {
-  animation:checkBounce .3s cubic-bezier(.22,.68,0,1.3) reverse;
-}
+.chk.unchecking { animation:checkBounce .3s cubic-bezier(.22,.68,0,1.3) reverse; }
 
 /* ── ADD BUTTON ──────────────────────────────────────────────────── */
 .add-btn {
@@ -356,11 +323,7 @@ body {
   opacity:.65; transition:opacity .2s, transform .2s, color .2s;
   animation:addBtnPulse 3s ease infinite;
 }
-.add-btn:hover {
-  opacity:1; color:var(--accent);
-  transform:translateX(3px);
-  animation:none;
-}
+.add-btn:hover { opacity:1; color:var(--accent); transform:translateX(3px); animation:none; }
 .add-btn .ic {
   width:17px; height:17px; border:1.5px solid currentColor; border-radius:50%;
   display:flex; align-items:center; justify-content:center; font-size:13px;
@@ -369,15 +332,12 @@ body {
 .add-btn:hover .ic { transform:rotate(90deg) scale(1.1); }
 
 /* ── PROGRESS ────────────────────────────────────────────────────── */
-.prog-wrap {
-  background:var(--rule); height:4px; border-radius:3px; margin:8px 0; overflow:hidden;
-}
+.prog-wrap { background:var(--rule); height:4px; border-radius:3px; margin:8px 0; overflow:hidden; }
 .prog-bar {
   height:100%; background:linear-gradient(90deg,#7aaa5a,#4d8830);
   border-radius:3px;
   transition:width .6s cubic-bezier(.22,.68,0,1.2);
-  width:0;
-  position:relative; overflow:hidden;
+  width:0; position:relative; overflow:hidden;
 }
 .prog-bar::after {
   content:''; position:absolute; inset:0;
@@ -394,7 +354,6 @@ body {
   transition:opacity .25s;
 }
 .notes-ta::placeholder { color:#c4b89a; }
-.notes-ta:focus { opacity:1; }
 
 /* ── FOOTER ──────────────────────────────────────────────────────── */
 .footer {
@@ -443,17 +402,14 @@ body {
 .hday-head .hd { font-weight:500; color:var(--ink); }
 .hday-head .hs { color:#4d8830; }
 .hday-head .hm { color:var(--missed-border); margin-left:7px; }
-.htasks { padding:0 15px 10px; transition:all .3s; }
+.htasks { padding:0 15px 10px; }
 .htask {
   display:flex; align-items:center; gap:8px; padding:4px 0;
   border-bottom:1px dashed var(--rule); font-size:.71rem;
   animation:fadeIn .25s ease both;
 }
 .htask:last-child { border-bottom:none; }
-.hdot {
-  width:7px; height:7px; border-radius:50%; flex-shrink:0;
-  transition:transform .2s;
-}
+.hdot { width:7px; height:7px; border-radius:50%; flex-shrink:0; transition:transform .2s; }
 .htask:hover .hdot { transform:scale(1.5); }
 .hdot.d { background:var(--done-border); }
 .hdot.m { background:var(--missed-border); }
@@ -507,13 +463,8 @@ body {
   font-family:'DM Mono',monospace; font-size:.76rem; letter-spacing:.06em;
   opacity:0; pointer-events:none; z-index:999; white-space:nowrap;
 }
-#toast.show {
-  animation:toastIn .3s cubic-bezier(.22,.68,0,1.2) forwards;
-  opacity:1;
-}
-#toast.hide {
-  animation:toastOut .3s ease forwards;
-}
+#toast.show { animation:toastIn .3s cubic-bezier(.22,.68,0,1.2) forwards; opacity:1; }
+#toast.hide { animation:toastOut .3s ease forwards; }
 </style>
 </head>
 <body>
@@ -549,9 +500,9 @@ body {
   <!-- ===== TODAY ===== -->
   <div id="pToday">
     <div class="stats">
-      <div class="stat"><div class="slabel">Total</div><div class="sval"    id="sTot">0</div></div>
-      <div class="stat"><div class="slabel">Done</div> <div class="sval g"  id="sDone">0</div></div>
-      <div class="stat"><div class="slabel">Missed</div><div class="sval r" id="sMiss">0</div></div>
+      <div class="stat"><div class="slabel">Total</div>  <div class="sval"   id="sTot">0</div></div>
+      <div class="stat"><div class="slabel">Done</div>   <div class="sval g" id="sDone">0</div></div>
+      <div class="stat"><div class="slabel">Missed</div> <div class="sval r" id="sMiss">0</div></div>
       <div class="stat"><div class="slabel">Upcoming</div><div class="sval b" id="sUp">0</div></div>
     </div>
     <div class="legend">
@@ -598,17 +549,25 @@ body {
 <div id="toast"></div>
 
 <script>
-// ── DATE ──────────────────────────────────────────────────────────────
-const NOW  = new Date();
+// ─────────────────────────────────────────────────────────────────────────────
+// CONFIG — Change API to your deployed Render URL when going live.
+// Example: const API = "https://your-app.onrender.com";
+// ─────────────────────────────────────────────────────────────────────────────
+const API = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
+  ? "http://127.0.0.1:8000"
+  : "https://YOUR_RENDER_APP_NAME.onrender.com"; // ← Replace before deploying
+
+// ── DATE ──────────────────────────────────────────────────────────────────────
+const NOW    = new Date();
 const DNAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const MNAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 document.getElementById('dNum').textContent   = NOW.getDate();
 document.getElementById('dName').textContent  = DNAMES[NOW.getDay()];
-document.getElementById('dMonth').textContent = MNAMES[NOW.getMonth()]+' '+NOW.getFullYear();
-const TKEY = `planner_${NOW.getFullYear()}_${NOW.getMonth()}_${NOW.getDate()}`;
-const API  = "http://127.0.0.1:8000";
+document.getElementById('dMonth').textContent = MNAMES[NOW.getMonth()] + ' ' + NOW.getFullYear();
 
-// ── DEFAULT SCHEDULE ─────────────────────────────────────────────────
+const TKEY = `planner_${NOW.getFullYear()}_${NOW.getMonth()}_${NOW.getDate()}`;
+
+// ── DEFAULT SCHEDULE ──────────────────────────────────────────────────────────
 const DEFAULTS = [
   '4:00 AM','5:00 AM','6:00 AM','7:00 AM','8:00 AM','9:00 AM',
   '10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM',
@@ -616,17 +575,17 @@ const DEFAULTS = [
   '10:00 PM','11:00 PM'
 ];
 
-// ── TIME UTILS ────────────────────────────────────────────────────────
+// ── TIME UTILS ─────────────────────────────────────────────────────────────────
 function toMins(str) {
   if (!str) return -1;
   const m = str.match(/(\d+):(\d+)\s*(AM|PM)/i);
   if (!m) return -1;
   let h = +m[1], min = +m[2], ap = m[3].toUpperCase();
-  if (ap==='AM' && h===12) h=0;
-  if (ap==='PM' && h!==12) h+=12;
-  return h*60+min;
+  if (ap === 'AM' && h === 12) h = 0;
+  if (ap === 'PM' && h !== 12) h += 12;
+  return h * 60 + min;
 }
-function nowMins() { const t=new Date(); return t.getHours()*60+t.getMinutes(); }
+function nowMins() { const t = new Date(); return t.getHours() * 60 + t.getMinutes(); }
 
 function slotState(timeStr, done) {
   if (done) return 's-done';
@@ -635,20 +594,20 @@ function slotState(timeStr, done) {
   const nm = nowMins();
   const allMins = [...document.querySelectorAll('#sched .slot')]
     .map(s => toMins(s.dataset.t)).filter(t => t > sm);
-  const next = allMins.length ? Math.min(...allMins) : sm+60;
+  const next = allMins.length ? Math.min(...allMins) : sm + 60;
   if (nm >= sm && nm < next) return 's-current';
   if (nm >= next)            return 's-missed';
   return 's-upcoming';
 }
 
-// ── RENDER ────────────────────────────────────────────────────────────
+// ── RENDER ────────────────────────────────────────────────────────────────────
 function render(saved) {
   const c = document.getElementById('sched');
   c.innerHTML = '';
   const slots = saved
     ? saved.slots
-    : DEFAULTS.map(time => ({ time, val:'', done:false }));
-  slots.forEach((s,i) => makeSlot(s.time, s.val, s.done, i));
+    : DEFAULTS.map(time => ({ time, val: '', done: false }));
+  slots.forEach((s, i) => makeSlot(s.time, s.val, s.done, i));
   refreshAllStates();
   if (saved) {
     document.getElementById('focusIn').value = saved.focus || '';
@@ -661,28 +620,30 @@ function render(saved) {
 function makeSlot(time, val, done, idx) {
   const c   = document.getElementById('sched');
   const div = document.createElement('div');
-  div.className = 'slot s-neutral';
-  div.dataset.t = time || '';
-  // Stagger each slot's fade-in
-  div.style.animationDelay = `${(idx||0) * 0.028}s`;
+  div.className  = 'slot s-neutral';
+  div.dataset.t  = time || '';
+  div.style.animationDelay = `${(idx || 0) * 0.028}s`;
   div.innerHTML = `
-    <span class="tlabel" style="padding-top:3px">${escHtml(time||'')}</span>
-    <textarea class="sinput${done?' struck':''}" placeholder="—" rows="1"
-      oninput="scheduleAutoSave();stats();autoResize(this)">${escHtml(val||'')}</textarea>
-    <button class="chk${done?' on':''}" onclick="toggleDone(this)" style="margin-top:2px">✓</button>
+    <span class="tlabel" style="padding-top:3px">${escHtml(time || '')}</span>
+    <textarea class="sinput${done ? ' struck' : ''}" placeholder="—" rows="1"
+      oninput="scheduleAutoSave();stats();autoResize(this)">${escHtml(val || '')}</textarea>
+    <button class="chk${done ? ' on' : ''}" onclick="toggleDone(this)" style="margin-top:2px">✓</button>
     <span class="now-badge">▶ NOW</span>
   `;
   c.appendChild(div);
 }
 
-function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 
-// ── STATE REFRESH ─────────────────────────────────────────────────────
+// ── STATE REFRESH ──────────────────────────────────────────────────────────────
 function refreshAllStates() {
   document.querySelectorAll('#sched .slot').forEach(s => {
-    const done = s.querySelector('.chk').classList.contains('on');
+    const done     = s.querySelector('.chk').classList.contains('on');
     const newState = slotState(s.dataset.t, done);
-    // Only update class if changed, to avoid re-triggering animations
     const curClass = [...s.classList].find(c => c.startsWith('s-'));
     if (curClass !== newState) {
       s.classList.remove(curClass);
@@ -691,15 +652,13 @@ function refreshAllStates() {
   });
 }
 
-// ── TOGGLE DONE ───────────────────────────────────────────────────────
+// ── TOGGLE DONE ───────────────────────────────────────────────────────────────
 function toggleDone(btn) {
   const wasOn = btn.classList.contains('on');
-  // brief "unchecking" reverse animation
   if (wasOn) btn.classList.add('unchecking');
   setTimeout(() => btn.classList.remove('unchecking'), 300);
-
   btn.classList.toggle('on');
-  const inp = btn.previousElementSibling;
+  const inp  = btn.previousElementSibling;
   inp.classList.toggle('struck', btn.classList.contains('on'));
   const slot = btn.closest('.slot');
   slot.className = 'slot ' + slotState(slot.dataset.t, btn.classList.contains('on'));
@@ -707,9 +666,9 @@ function toggleDone(btn) {
   stats();
 }
 
-// ── ADD SLOT ──────────────────────────────────────────────────────────
+// ── ADD SLOT ───────────────────────────────────────────────────────────────────
 function addSlot() {
-  const c = document.getElementById('sched');
+  const c   = document.getElementById('sched');
   const div = document.createElement('div');
   div.className = 'slot s-neutral just-added';
   div.dataset.t = '';
@@ -721,60 +680,60 @@ function addSlot() {
     <span class="now-badge">▶ NOW</span>
   `;
   c.appendChild(div);
-  // Remove highlight class after animation
   setTimeout(() => div.classList.remove('just-added'), 700);
-  div.querySelectorAll('input, textarea')[0].focus();
+  div.querySelectorAll('input')[0].focus();
   stats();
 }
 
-// ── STATS ─────────────────────────────────────────────────────────────
-const _prevStats = { tot:null, done:null, miss:null, up:null };
+// ── STATS ─────────────────────────────────────────────────────────────────────
+const _prevStats = { tot: null, done: null, miss: null, up: null };
 function stats() {
-  let tot=0,done=0,miss=0,up=0;
+  let tot = 0, done = 0, miss = 0, up = 0;
   document.querySelectorAll('#sched .slot').forEach(s => {
-    const inp = s.querySelectorAll('.sinput');
-    const valInp = inp.length > 1 ? inp[inp.length-1] : inp[0];
+    const inp    = s.querySelectorAll('.sinput');
+    const valInp = inp.length > 1 ? inp[inp.length - 1] : inp[0];
     if (!valInp || !valInp.value.trim()) return;
     tot++;
     const cl = s.classList;
-    if (cl.contains('s-done'))          done++;
+    if      (cl.contains('s-done'))     done++;
     else if (cl.contains('s-missed'))   miss++;
     else if (cl.contains('s-upcoming')) up++;
   });
 
-  // Animate stat numbers when they change
   const vals = { tot, done, miss, up };
-  const ids  = { tot:'sTot', done:'sDone', miss:'sMiss', up:'sUp' };
+  const ids  = { tot: 'sTot', done: 'sDone', miss: 'sMiss', up: 'sUp' };
   for (const [k, id] of Object.entries(ids)) {
     const el = document.getElementById(id);
     if (_prevStats[k] !== vals[k]) {
       el.textContent = vals[k];
       el.classList.remove('pop');
-      void el.offsetWidth; // reflow to restart animation
+      void el.offsetWidth;
       el.classList.add('pop');
       setTimeout(() => el.classList.remove('pop'), 400);
       _prevStats[k] = vals[k];
     }
   }
 
-  const pct = tot > 0 ? Math.round(done/tot*100) : 0;
-  document.getElementById('pBar').style.width  = pct+'%';
-  document.getElementById('pTxt').textContent  = pct+'% complete';
+  const pct = tot > 0 ? Math.round(done / tot * 100) : 0;
+  document.getElementById('pBar').style.width = pct + '%';
+  document.getElementById('pTxt').textContent = pct + '% complete';
 }
 
-// ── COLLECT SLOTS ─────────────────────────────────────────────────────
+// ── COLLECT SLOTS ──────────────────────────────────────────────────────────────
 function collectSlots() {
   return [...document.querySelectorAll('#sched .slot')].map(s => {
-    const inps = s.querySelectorAll('.sinput');
-    const isCustomTime = inps.length > 1 && inps[0].tagName==='INPUT' && inps[0].placeholder==='time';
-    const time = isCustomTime ? inps[0].value : (s.querySelector('.tlabel')?.textContent || s.dataset.t || '');
-    const val  = inps[inps.length-1]?.value || '';
+    const inps         = s.querySelectorAll('.sinput');
+    const isCustomTime = inps.length > 1 && inps[0].tagName === 'INPUT' && inps[0].placeholder === 'time';
+    const time = isCustomTime
+      ? inps[0].value
+      : (s.querySelector('.tlabel')?.textContent || s.dataset.t || '');
+    const val  = inps[inps.length - 1]?.value || '';
     const done = s.querySelector('.chk')?.classList.contains('on') || false;
     return { time, val, done };
   });
 }
 
-// ── DEBOUNCED AUTO-SAVE ───────────────────────────────────────────────
+// ── DEBOUNCED AUTO-SAVE ────────────────────────────────────────────────────────
 let _saveTimer = null;
 function scheduleAutoSave() {
   clearTimeout(_saveTimer);
@@ -782,90 +741,93 @@ function scheduleAutoSave() {
 }
 
 async function autoSave() {
-  const token = localStorage.getItem("token");
-  if (!token) return;
+  const token = localStorage.getItem('token');
   const payload = {
     slots: collectSlots(),
     focus: document.getElementById('focusIn').value,
     notes: document.getElementById('notesTA').value
   };
+  // Always save to localStorage as fallback
   localStorage.setItem(TKEY, JSON.stringify(payload));
+  if (!token) return;
   try {
-    await fetch(API+"/save_day", {
-      method: "POST",
-      headers: { "Content-Type":"application/json", "Authorization":"Bearer "+token },
-      body: JSON.stringify({ date_key: TKEY, payload })
+    await fetch(API + '/save_day', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body:    JSON.stringify({ date_key: TKEY, payload })
     });
-  } catch(e) {}
+  } catch (e) { /* silent fail — localStorage already saved */ }
 }
 
-// ── SAVE DAY ──────────────────────────────────────────────────────────
+// ── SAVE DAY ──────────────────────────────────────────────────────────────────
 async function saveDay() {
   await autoSave();
   const data = {
-    slots: collectSlots(),
-    focus: document.getElementById('focusIn').value,
-    notes: document.getElementById('notesTA').value,
-    dateLabel: DNAMES[NOW.getDay()]+', '+NOW.getDate()+' '+MNAMES[NOW.getMonth()]+' '+NOW.getFullYear(),
-    dateKey: TKEY
+    slots:     collectSlots(),
+    focus:     document.getElementById('focusIn').value,
+    notes:     document.getElementById('notesTA').value,
+    dateLabel: DNAMES[NOW.getDay()] + ', ' + NOW.getDate() + ' ' + MNAMES[NOW.getMonth()] + ' ' + NOW.getFullYear(),
+    dateKey:   TKEY
   };
-  let hist = JSON.parse(localStorage.getItem('planner_hist')||'[]');
-  const idx = hist.findIndex(h=>h.dateKey===TKEY);
-  if (idx>=0) hist[idx]=data; else hist.unshift(data);
-  if (hist.length > 60) hist = hist.slice(0,60);
+  let hist    = JSON.parse(localStorage.getItem('planner_hist') || '[]');
+  const idx   = hist.findIndex(h => h.dateKey === TKEY);
+  if (idx >= 0) hist[idx] = data; else hist.unshift(data);
+  if (hist.length > 60) hist = hist.slice(0, 60);
   localStorage.setItem('planner_hist', JSON.stringify(hist));
   toast('Day saved to history ✓');
 }
 
-// ── CLEAR TODAY ───────────────────────────────────────────────────────
+// ── CLEAR TODAY ───────────────────────────────────────────────────────────────
 function clearDay() {
   if (!confirm('Clear all entries for today?')) return;
   localStorage.removeItem(TKEY);
   render(null);
 }
 
-// ── TABS ──────────────────────────────────────────────────────────────
+// ── TABS ──────────────────────────────────────────────────────────────────────
 function switchTab(name, btn) {
-  // Tab ripple effect
-  const rect = btn.getBoundingClientRect();
+  const rect   = btn.getBoundingClientRect();
   const ripple = document.createElement('span');
-  ripple.className = 'tab-ripple';
-  ripple.style.cssText = `width:${btn.offsetWidth}px;height:${btn.offsetWidth}px;left:0;top:${(btn.offsetHeight - btn.offsetWidth)/2}px`;
+  ripple.className   = 'tab-ripple';
+  ripple.style.cssText = `width:${btn.offsetWidth}px;height:${btn.offsetWidth}px;left:0;top:${(btn.offsetHeight - btn.offsetWidth) / 2}px`;
   btn.appendChild(ripple);
   setTimeout(() => ripple.remove(), 500);
 
-  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
-  document.getElementById('pToday').classList.toggle('hidden',   name!=='today');
-  document.getElementById('pHistory').classList.toggle('hidden', name!=='history');
-  if (name==='history') renderHistory();
+  document.getElementById('pToday').classList.toggle('hidden',   name !== 'today');
+  document.getElementById('pHistory').classList.toggle('hidden', name !== 'history');
+  if (name === 'history') renderHistory();
 }
 
-// ── HISTORY ───────────────────────────────────────────────────────────
+// ── HISTORY ───────────────────────────────────────────────────────────────────
 function renderHistory() {
   const el   = document.getElementById('histList');
-  const hist = JSON.parse(localStorage.getItem('planner_hist')||'[]');
+  const hist = JSON.parse(localStorage.getItem('planner_hist') || '[]');
   if (!hist.length) {
     el.innerHTML = '<div class="hist-empty">No history yet.<br>Complete your day and press <b>💾 Save Day</b> to log your progress here.</div>';
     return;
   }
   el.innerHTML = '';
   hist.forEach((day, i) => {
-    const filled = (day.slots||[]).filter(s=>s.val);
-    const done   = filled.filter(s=>s.done).length;
+    const filled = (day.slots || []).filter(s => s.val);
+    const done   = filled.filter(s => s.done).length;
     const miss   = filled.length - done;
-    const div = document.createElement('div');
+    const div    = document.createElement('div');
     div.className = 'hday';
     div.style.animationDelay = `${i * 0.06}s`;
     div.innerHTML = `
       <div class="hday-head" onclick="this.nextElementSibling.classList.toggle('hidden')">
-        <span class="hd">${day.dateLabel||'Unknown date'}</span>
-        <span><span class="hs">✓ ${done}/${filled.length}</span>${miss>0?`<span class="hm">✗ ${miss} missed</span>`:''}</span>
+        <span class="hd">${day.dateLabel || 'Unknown date'}</span>
+        <span>
+          <span class="hs">✓ ${done}/${filled.length}</span>
+          ${miss > 0 ? `<span class="hm">✗ ${miss} missed</span>` : ''}
+        </span>
       </div>
       <div class="htasks hidden">
-        ${filled.map((s,j)=>`
-          <div class="htask" style="animation-delay:${j*.04}s">
-            <div class="hdot ${s.done?'d':'m'}"></div>
+        ${filled.map((s, j) => `
+          <div class="htask" style="animation-delay:${j * .04}s">
+            <div class="hdot ${s.done ? 'd' : 'm'}"></div>
             <span class="htime">${escHtml(s.time)}</span>
             <span class="htxt">${escHtml(s.val)}</span>
           </div>`).join('')}
@@ -883,31 +845,31 @@ function clearHistory() {
   toast('History cleared');
 }
 
-// ── LIVE CLOCK ────────────────────────────────────────────────────────
+// ── LIVE CLOCK ─────────────────────────────────────────────────────────────────
 function tick() {
   const t  = new Date();
   const h  = t.getHours(), m = t.getMinutes(), s = t.getSeconds();
-  const hh = (h%12)||12, mm = String(m).padStart(2,'0'), ss = String(s).padStart(2,'0');
-  document.getElementById('clk').textContent = `${hh}:${mm}:${ss} ${h>=12?'PM':'AM'}`;
-  if (s===0) { refreshAllStates(); stats(); }
+  const hh = (h % 12) || 12, mm = String(m).padStart(2, '0'), ss = String(s).padStart(2, '0');
+  document.getElementById('clk').textContent = `${hh}:${mm}:${ss} ${h >= 12 ? 'PM' : 'AM'}`;
+  if (s === 0) { refreshAllStates(); stats(); }
 }
 setInterval(tick, 1000);
 tick();
 
-// ── TOAST ─────────────────────────────────────────────────────────────
+// ── TOAST ──────────────────────────────────────────────────────────────────────
 let _toastTimer = null;
 function toast(msg) {
   const t = document.getElementById('toast');
   clearTimeout(_toastTimer);
   t.textContent = msg;
-  t.className = 'show';
+  t.className   = 'show';
   _toastTimer = setTimeout(() => {
     t.className = 'hide';
     setTimeout(() => { t.className = ''; }, 320);
   }, 2200);
 }
 
-// ── AUTO RESIZE TEXTAREA ─────────────────────────────────────────────
+// ── AUTO RESIZE TEXTAREA ────────────────────────────────────────────────────────
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = el.scrollHeight + 'px';
@@ -916,61 +878,101 @@ function autoResizeAll() {
   document.querySelectorAll('#sched textarea.sinput').forEach(autoResize);
 }
 
-// ── AUTH ──────────────────────────────────────────────────────────────
+// ── AUTH ───────────────────────────────────────────────────────────────────────
 async function register() {
   const authMsg = document.getElementById('authMsg');
   authMsg.style.color = 'var(--ink-light)';
   authMsg.textContent = 'Registering...';
-  const r = await fetch(API+"/register", {
-    method:"POST", headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({ username:document.getElementById('u').value, password:document.getElementById('p').value })
-  });
-  if (r.ok) { authMsg.style.color='#4d8830'; authMsg.textContent='Registered! Now login.'; }
-  else       { authMsg.style.color='var(--missed-border)'; authMsg.textContent='Username already exists.'; }
+  try {
+    const r = await fetch(API + '/register', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({
+        username: document.getElementById('u').value.trim(),
+        password: document.getElementById('p').value
+      })
+    });
+    if (r.ok) {
+      authMsg.style.color = '#4d8830';
+      authMsg.textContent = 'Registered! Now login.';
+    } else {
+      const err = await r.json().catch(() => ({}));
+      authMsg.style.color = 'var(--missed-border)';
+      authMsg.textContent = err.detail || 'Username already exists.';
+    }
+  } catch (e) {
+    authMsg.style.color = 'var(--missed-border)';
+    authMsg.textContent = 'Cannot reach server. Check your connection.';
+  }
 }
 
 async function login() {
   const authMsg = document.getElementById('authMsg');
   authMsg.style.color = 'var(--ink-light)';
   authMsg.textContent = 'Logging in...';
-  const fd = new FormData();
-  fd.append("username", document.getElementById('u').value);
-  fd.append("password", document.getElementById('p').value);
-  const r = await fetch(API+"/login", {method:"POST", body:fd});
-  if (!r.ok) { authMsg.style.color='var(--missed-border)'; authMsg.textContent='Invalid username or password.'; return; }
-  const data = await r.json();
-  localStorage.setItem("token", data.access_token);
-  showApp();
+  try {
+    const fd = new FormData();
+    fd.append('username', document.getElementById('u').value.trim());
+    fd.append('password', document.getElementById('p').value);
+    const r = await fetch(API + '/login', { method: 'POST', body: fd });
+    if (!r.ok) {
+      authMsg.style.color = 'var(--missed-border)';
+      authMsg.textContent = 'Invalid username or password.';
+      return;
+    }
+    const data = await r.json();
+    localStorage.setItem('token', data.access_token);
+    showApp();
+  } catch (e) {
+    authMsg.style.color = 'var(--missed-border)';
+    authMsg.textContent = 'Cannot reach server. Check your connection.';
+  }
 }
 
 function showApp() {
   document.getElementById('authBox').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
+  document.getElementById('app').style.display     = 'block';
   loadFromServer();
 }
 
 async function loadFromServer() {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
   if (!token) return;
   try {
-    const r = await fetch(API+"/get_day/"+TKEY, { headers:{Authorization:"Bearer "+token} });
+    const r = await fetch(API + '/get_day/' + TKEY, {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    if (!r.ok) throw new Error('not ok');
     const d = await r.json();
-    if (d.data) render(JSON.parse(d.data));
-    else { const local = localStorage.getItem(TKEY); render(local ? JSON.parse(local) : null); }
-  } catch(e) {
-    const local = localStorage.getItem(TKEY); render(local ? JSON.parse(local) : null);
+    if (d.data) {
+      // FIX: d.data is now a valid JSON string — parse it correctly
+      render(JSON.parse(d.data));
+    } else {
+      const local = localStorage.getItem(TKEY);
+      render(local ? JSON.parse(local) : null);
+    }
+  } catch (e) {
+    const local = localStorage.getItem(TKEY);
+    render(local ? JSON.parse(local) : null);
   }
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────
+// ── INIT ───────────────────────────────────────────────────────────────────────
 document.getElementById('focusIn').addEventListener('input', scheduleAutoSave);
 document.getElementById('notesTA').addEventListener('input', scheduleAutoSave);
 
-if (localStorage.getItem("token")) {
+// Allow Enter key to submit login
+document.getElementById('p').addEventListener('keydown', e => {
+  if (e.key === 'Enter') login();
+});
+
+// Auto-login if token already stored
+if (localStorage.getItem('token')) {
   showApp();
 } else {
+  // Show app in offline mode (no login required for local use)
   document.getElementById('authBox').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
+  document.getElementById('app').style.display     = 'block';
   const local = localStorage.getItem(TKEY);
   render(local ? JSON.parse(local) : null);
 }
