@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+sqlmodel
+bcrypt
+python-jose
+psycopg2-binary
